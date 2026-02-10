@@ -1,6 +1,6 @@
 # 4250-Semester-Project
 
-Members: Jezreel, Dennis, Shaun, Junior, Nathan
+Members: Jezreel, Dennis, Shaun, Junior, Nathan, Mason
 
 # What is MTD?
 
