@@ -8,4 +8,4 @@ MTD is a quick and simple tower defense game about blasting away you foes!
 
 ## Current Progress
 
-Currently, we're in the _Planning_ phase, where we're planning out the game, it's functions, and how it will generally flow. We're also considering art styles, ui elements, and discussing the barebones elements of a Tower Defense game.
+We are in sprint 2, currently working on main logic of the game, having enemies follow a path
