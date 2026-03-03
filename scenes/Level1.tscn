@@ -4,8 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://dw1mnfli86xh1" path="res://scenes/Enemy.tscn" id="2_bwv4p"]
 [ext_resource type="Script" uid="uid://d0wc3oxeth4y2" path="res://scripts/path_follow_2d.gd" id="2_odhdn"]
 
-[sub_resource type="GDScript" id="GDScript_odhdn"]
-
 [sub_resource type="Curve2D" id="Curve2D_6ovph"]
 bake_interval = 65.51
 _data = {
@@ -16,7 +14,6 @@ point_count = 18
 [node name="Level1" type="Node2D" unique_id=1979386671]
 
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
-script = SubResource("GDScript_odhdn")
 
 [node name="Map" parent="GameManager" unique_id=1542853507 instance=ExtResource("1_6ovph")]
 position = Vector2(-316, -167)
@@ -31,7 +28,7 @@ loop = false
 script = ExtResource("2_odhdn")
 
 [node name="CharacterBody2D" parent="GameManager/Map/Path2D/PathFollow2D" unique_id=1151541198 instance=ExtResource("2_bwv4p")]
-position = Vector2(2, 1)
+position = Vector2(2, -2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)
