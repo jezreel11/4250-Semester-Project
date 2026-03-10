@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="MTD"
-run/main_scene="res://scenes/Game.tscn"
+run/main_scene="uid://djabir4ro20dq"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
