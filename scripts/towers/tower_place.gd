@@ -1,5 +1,6 @@
 extends Node2D
 
+# test committing changes
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
 var placed_towers = []  # tracks all placed towers
 
