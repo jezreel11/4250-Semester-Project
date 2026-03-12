@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://djabir4ro20dq"]
 
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
-[ext_resource type="Script" uid="uid://byyw5y5adfu1d" path="res://scenes/tower_place.gd" id="1_dw26h"]
+[ext_resource type="Script" uid="uid://bklt0xgdbdsa7" path="res://scripts/towers/tower_place.gd" id="1_dw26h"]
 [ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="2_bwv4p"]
 [ext_resource type="Script" path="res://scripts/path_follow_2d.gd" id="2_odhdn"]
 
