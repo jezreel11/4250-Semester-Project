@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 [gd_scene format=3 uid="uid://b16qo40warxg2"]
 
 [ext_resource type="Script" path="res://scripts/towers/tower.gd" id="1_hlosp"]
+=======
+[gd_scene format=3 uid="uid://chfm1c1paxb7c"]
+
+[ext_resource type="Script" uid="uid://8wby3drq7jvx" path="res://scripts/towers/tower.gd" id="1_hlosp"]
+>>>>>>> cc60aa343bca428017a1df8a0f95db50567d9996
 [ext_resource type="Texture2D" uid="uid://bdlb08w1souck" path="res://assets/Buildings/Red Buildings/Tower.png" id="2_hlosp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eywsc"]
