@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://d3hri25svlfrk"]
+
+[ext_resource type="Script" uid="uid://d1vacvrydj2u8" path="res://scripts/enemies/Lancer.gd" id="1_frhfr"]
+[ext_resource type="Texture2D" uid="uid://b7iqdg2f2m2h1" path="res://assets/Units/Red Units/Lancer/Lancer_Run.png" id="2_v0ics"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ucby1"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(0, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wp0tx"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(320, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rf184"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(640, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_br5yt"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(960, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vcmn2"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(1280, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h0ifd"]
+atlas = ExtResource("2_v0ics")
+region = Rect2(1600, 0, 320, 320)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xgeto"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ucby1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wp0tx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rf184")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_br5yt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vcmn2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h0ifd")
+}],
+"loop": true,
+"name": &"Running",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c1phf"]
+radius = 16.763054
+
+[node name="LancerRunning" type="PathFollow2D" unique_id=440049922]
+rotates = false
+cubic_interp = false
+loop = false
+script = ExtResource("1_frhfr")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1399295072]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1843034143]
+position = Vector2(-1.0000038, 1.0000038)
+scale = Vector2(0.45312503, 0.4296875)
+sprite_frames = SubResource("SpriteFrames_xgeto")
+animation = &"Running"
+autoplay = "Running"
+frame = 5
+frame_progress = 0.041928593
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D/AnimatedSprite2D" unique_id=1752655404]
+position = Vector2(1, 8)
+shape = SubResource("CircleShape2D_c1phf")

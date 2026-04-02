@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://djabir4ro20dq"]
 
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
-[ext_resource type="PackedScene" uid="uid://dw1mnfli86xh1" path="res://scenes/Enemy.tscn" id="2_bwv4p"]
-[ext_resource type="Script" uid="uid://d0wc3oxeth4y2" path="res://scripts/path_follow_2d.gd" id="2_odhdn"]
+<<<<<<< HEAD
+[ext_resource type="Script" uid="uid://bklt0xgdbdsa7" path="res://scripts/towers/tower_place.gd" id="1_dw26h"]
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="2_bwv4p"]
+[ext_resource type="Script" path="res://scripts/path_follow_2d.gd" id="2_odhdn"]
+>>>>>>>>> Temporary merge branch 2
 
 [sub_resource type="Curve2D" id="Curve2D_6ovph"]
 bake_interval = 65.51
@@ -12,6 +15,12 @@ _data = {
 point_count = 18
 
 [node name="Level1" type="Node2D" unique_id=1979386671]
+<<<<<<<<< Temporary merge branch 1
+script = ExtResource("1_odhdn")
+=========
+position = Vector2(1, 0)
+script = ExtResource("1_dw26h")
+>>>>>>>>> Temporary merge branch 2
 
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
 
@@ -20,15 +29,6 @@ position = Vector2(-316, -167)
 
 [node name="Path2D" type="Path2D" parent="GameManager/Map" unique_id=1211744239]
 curve = SubResource("Curve2D_6ovph")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="GameManager/Map/Path2D" unique_id=1598019396]
-position = Vector2(-17, 167)
-rotates = false
-loop = false
-script = ExtResource("2_odhdn")
-
-[node name="CharacterBody2D" parent="GameManager/Map/Path2D/PathFollow2D" unique_id=1151541198 instance=ExtResource("2_bwv4p")]
-position = Vector2(2, -2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)
