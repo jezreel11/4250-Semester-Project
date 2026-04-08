@@ -15,10 +15,19 @@ run/main_scene="uid://djabir4ro20dq"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Console="*uid://ouiu5xh1cs8n"
+Console_Comands="*uid://t4vld33eu52s"
+
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/console/plugin.cfg")
 
 [physics]
 
