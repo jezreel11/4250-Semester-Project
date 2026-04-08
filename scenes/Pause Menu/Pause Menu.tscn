@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://cn543ovxdk4lf"]
+
+[ext_resource type="Script" uid="uid://fly4bm3hpurc" path="res://scenes/Pause Menu/Pause Menu Scripts/pause_script.gd" id="1_5qgnb"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=77408654 node_paths=PackedStringArray("container_Main", "button_Resume", "button_Settings", "button_Restart", "button_MainMenu", "button_Quit")]
+script = ExtResource("1_5qgnb")
+container_Main = NodePath(".")
+button_Resume = NodePath("VBoxContainer/Resume Button")
+button_Settings = NodePath("VBoxContainer/Settings Button")
+button_Restart = NodePath("VBoxContainer/Restart Button")
+button_MainMenu = NodePath("VBoxContainer/Main Menu Button")
+button_Quit = NodePath("VBoxContainer/Quit Game Button")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1372062140]
+offset_left = -21.0
+offset_top = -11.0
+offset_right = 1170.0
+offset_bottom = 665.0
+color = Color(0.046542805, 0.046542805, 0.046542805, 0.1882353)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1775008743]
+offset_left = 340.0
+offset_top = 252.0
+offset_right = 849.0
+offset_bottom = 424.0
+
+[node name="Resume Button" type="Button" parent="VBoxContainer" unique_id=1227473208]
+layout_mode = 2
+text = "Resume Game"
+
+[node name="Settings Button" type="Button" parent="VBoxContainer" unique_id=341980174]
+layout_mode = 2
+text = "Settings"
+
+[node name="Restart Button" type="Button" parent="VBoxContainer" unique_id=1474051526]
+layout_mode = 2
+text = "Restart Level"
+
+[node name="Main Menu Button" type="Button" parent="VBoxContainer" unique_id=1910495081]
+layout_mode = 2
+text = "Main Menu"
+
+[node name="Quit Game Button" type="Button" parent="VBoxContainer" unique_id=220266366]
+layout_mode = 2
+text = "Quit Game"
