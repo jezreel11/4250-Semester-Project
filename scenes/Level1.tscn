@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
 [ext_resource type="Script" uid="uid://527425kq1lt8" path="res://scripts/level_1.gd" id="1_odhdn"]
+[ext_resource type="PackedScene" uid="uid://chfm1c1paxb7c" path="res://scenes/Towers/Tower.tscn" id="3_odhdn"]
 
 [sub_resource type="Curve2D" id="Curve2D_6ovph"]
 bake_interval = 65.51
@@ -24,3 +25,5 @@ curve = SubResource("Curve2D_6ovph")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)
 zoom = Vector2(1.8, 1.8)
+
+[node name="Tower" parent="." unique_id=1763118318 instance=ExtResource("3_odhdn")]
