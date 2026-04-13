@@ -59,7 +59,13 @@ func _on_spawn_timer_timeout():
 func spawn_enemy():
 	# Instantiate a new enemy and add it to the path
 	var enemy = enemy_scene.instantiate()
+
+	# Add to scene tree first so the script is fully initialized
 	$GameManager/Map/Path2D.add_child(enemy)
+
+	# Then set the lane index so the enemy knows its offset at the end
+	enemy.lane_index = enemies_spawned
+
 
 func _can_place_tower(world_pos: Vector2) -> bool:
 	# Check if the position is within any valid placement zone
