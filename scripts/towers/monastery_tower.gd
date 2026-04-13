@@ -1,11 +1,12 @@
-# monastery_tower.gd
 class_name MonasteryTower
 extends BaseTower
 
-# Monastery-specific — spawns Monks that heal nearby units
 @export var spawn_rate: float = 8.0
 @export var max_units: int = 2
 @export var heal_amount: int = 10
+
+# No monk scene yet so we'll use LancerRunning as placeholder
+var monk_scene = preload("res://assets/Animations/LancerRunning.tscn")
 
 func _ready():
     tower_name = "Monastery"
@@ -14,3 +15,15 @@ func _ready():
     attack_range = 120.0
     cost = 150
     super._ready()
+    spawn_timer.wait_time = spawn_rate
+    spawn_timer.start()
+
+func _on_spawn_timer():
+    spawned_units = spawned_units.filter(func(u): return is_instance_valid(u))
+
+    if spawned_units.size() < max_units:
+        var monk = monk_scene.instantiate()
+        monk.global_position = global_position
+        get_parent().add_child(monk)
+        spawned_units.append(monk)
+        print("Monastery spawned a Monk")

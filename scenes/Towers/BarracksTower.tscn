@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bgj33oypkjk3o"]
+
+[ext_resource type="Script" uid="uid://dcg5t77nfv8n8" path="res://scripts/towers/barrack_tower.gd" id="1_hxnd7"]
+[ext_resource type="Texture2D" uid="uid://bxkynj5yaa24b" path="res://assets/Buildings/Blue Buildings/Barracks.png" id="2_h4sns"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hxnd7"]
+radius = 20.0
+
+[node name="BarracksTower" type="Node2D" unique_id=1152463348]
+scale = Vector2(0.4, 0.4)
+script = ExtResource("1_hxnd7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=316148577]
+texture = ExtResource("2_h4sns")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=454706900]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=231891307]
+visible = false
+scale = Vector2(2.5, 5)
+shape = SubResource("CircleShape2D_hxnd7")

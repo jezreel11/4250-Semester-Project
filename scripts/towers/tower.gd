@@ -8,6 +8,7 @@ func _ready():
     attack_range = 150.0
     cost = 200
     super._ready()
+    # No spawning — timer stays off
 
 func _draw():
     draw_circle(Vector2.ZERO, attack_range, Color(1, 1, 1, 0.1))
