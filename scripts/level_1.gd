@@ -6,6 +6,7 @@ extends Node2D
 
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
+@onready var placement_zones = $GameManager/Map/PlacementZones
 
 # Dictionary of all available tower types
 var tower_scenes = {
@@ -58,9 +59,7 @@ func _on_spawn_timer_timeout():
 func spawn_enemy():
 	# Instantiate a new enemy and add it to the path
 	var enemy = enemy_scene.instantiate()
-	enemy.lane_index = enemies_spawned
 	$GameManager/Map/Path2D.add_child(enemy)
-
 
 func _can_place_tower(world_pos: Vector2) -> bool:
 	# Check if the position is within any valid placement zone
