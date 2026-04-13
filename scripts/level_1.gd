@@ -1,8 +1,13 @@
 extends Node2D
 
+# Preloading the enemy scenes
 @export var enemy_scene = preload("res://assets/Animations/LancerRunning.tscn")
 @export var enemy_attack = preload("res://assets/Animations/LancerAttacking.tscn")
 
+# Preload Towers for placement
+@onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
+
+# Dictionary of all available tower types
 var tower_scenes = {
 	"cannon":    preload("res://scenes/towers/Tower.tscn"),
 	"archer":    preload("res://scenes/towers/ArcherTower.tscn"),
@@ -10,21 +15,55 @@ var tower_scenes = {
 	"monastery": preload("res://scenes/towers/MonasteryTower.tscn")
 }
 
-var selected_tower: String = "cannon"
+# Tracks all placed towers in order
 var placed_towers = []
 
-@onready var placement_zones = $GameManager/Map/PlacementZones
+# Currently selected tower type
+var selected_tower = "cannon"
+
+# --- WAVE SETTINGS ---
+# How many enemies spawn per wave (editable in inspector)
+@export var wave_size: int = 5
+
+# How many seconds between each enemy spawn (editable in inspector)
+@export var spawn_interval: float = 2.0
+
+# Tracks how many enemies have been spawned so far
+var enemies_spawned: int = 0
+
+# The timer node that triggers each enemy spawn
+var spawn_timer: Timer
+
 
 func _ready():
-	spawn_enemy()
-	print("Tower controls: 1=Cannon  2=Archer  3=Barracks  4=Monastery")
-	print("Left click to place | Backspace to undo")
+	# Set up the spawn timer
+	spawn_timer = Timer.new()
+	spawn_timer.wait_time = spawn_interval
+	spawn_timer.one_shot = false
+	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	add_child(spawn_timer)
+	spawn_timer.start()
+
+
+func _on_spawn_timer_timeout():
+	# Spawn an enemy if we haven't hit the wave size yet
+	if enemies_spawned < wave_size:
+		spawn_enemy()
+		enemies_spawned += 1
+	else:
+		# All enemies spawned — stop the timer
+		spawn_timer.stop()
+
 
 func spawn_enemy():
+	# Instantiate a new enemy and add it to the path
 	var enemy = enemy_scene.instantiate()
+	enemy.lane_index = enemies_spawned
 	$GameManager/Map/Path2D.add_child(enemy)
 
+
 func _can_place_tower(world_pos: Vector2) -> bool:
+	# Check if the position is within any valid placement zone
 	for zone in placement_zones.get_children():
 		if zone is Area2D:
 			var shape = zone.get_node("CollisionShape2D")
@@ -36,14 +75,18 @@ func _can_place_tower(world_pos: Vector2) -> bool:
 					return true
 	return false
 
+
 func _is_occupied(world_pos: Vector2) -> bool:
+	# Check if a tower is already too close to this position
 	for tower in placed_towers:
 		if is_instance_valid(tower):
 			if tower.global_position.distance_to(world_pos) < 70.0:
 				return true
 	return false
 
+
 func _input(event):
+	# --- TOWER SELECTION ---
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_1:
 			selected_tower = "cannon"
@@ -58,11 +101,13 @@ func _input(event):
 			selected_tower = "monastery"
 			print("Selected: Monastery")
 		elif event.keycode == KEY_BACKSPACE:
+			# Remove the last placed tower
 			if placed_towers.size() > 0:
 				var last_tower = placed_towers.pop_back()
 				last_tower.queue_free()
 				print("Tower removed")
 
+	# --- TOWER PLACEMENT ---
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			var click_pos = get_global_mouse_position()
