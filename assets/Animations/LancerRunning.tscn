@@ -76,3 +76,12 @@ frame_progress = 0.041928593
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D/AnimatedSprite2D" unique_id=1752655404]
 position = Vector2(1, 8)
 shape = SubResource("CircleShape2D_c1phf")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+position = Vector2(-20, 20)
+size = Vector2(40, 4)
+min_value = 0.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+self_modulate = Color(1, 0, 0, 1)
