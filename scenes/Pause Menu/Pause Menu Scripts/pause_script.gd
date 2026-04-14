@@ -5,30 +5,40 @@ extends Node
 
 # Buttons
 @export var button_Resume: Button
-@export var button_Settings: Button
 @export var button_Restart: Button
 @export var button_MainMenu: Button
 @export var screen_MainMenu: NavigationLink2D
 @export var button_Quit: Button
+@export var key_Resume: Key = KEY_ESCAPE
 
-# Settings submenu (you will add this later)
-@export var container_Settings: Control
 
+const PAUSE_ACTION = "_pause_toggle"
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	container_Main.process_mode = Node.PROCESS_MODE_ALWAYS
 	container_Main.visible = false
-	container_Settings.visible = false
+	_setup_pause_key()
 
-	# Connect buttons
+	# Connect buttons to functions
 	button_Resume.pressed.connect(resume_game)
-	button_Settings.pressed.connect(open_settings)
 	button_Restart.pressed.connect(restart_level)
 	button_MainMenu.pressed.connect(go_to_main_menu)
 	button_Quit.pressed.connect(quit_game)
 
 
-func _input(event):
-	if event.is_action_pressed("ui_cancel"): # ESC
+func _setup_pause_key():
+	if InputMap.has_action(PAUSE_ACTION):
+		InputMap.action_erase_events(PAUSE_ACTION)
+	else:
+		InputMap.add_action(PAUSE_ACTION)
+	var ev = InputEventKey.new()
+	ev.keycode = key_Resume
+	InputMap.action_add_event(PAUSE_ACTION, ev)
+
+
+func _process(_delta):
+	if Input.is_action_just_pressed(PAUSE_ACTION):
 		toggle_pause()
 
 
@@ -42,19 +52,11 @@ func toggle_pause():
 func pause_game():
 	get_tree().paused = true
 	container_Main.visible = true
-	container_Settings.visible = false
 
 
 func resume_game():
 	get_tree().paused = false
 	container_Main.visible = false
-	container_Settings.visible = false
-
-
-func open_settings():
-	container_Main.visible = false
-	container_Settings.visible = true
-
 
 func restart_level():
 	get_tree().reload_current_scene()
