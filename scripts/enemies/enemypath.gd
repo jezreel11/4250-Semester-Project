@@ -11,6 +11,8 @@ var attack_count: int = 0
 const MAX_ATTACKS: int = 15
 var previous_attack_frame: int = -1
 var attack_finished: bool = false
+signal enemy_finished
+
 
 # Lane offset — each enemy gets a unique index so they spread out
 # alternating up and down at the end of the path instead of stacking
@@ -80,6 +82,7 @@ func _process_attack_loop():
 			attack_sprite.frame = max(frame_count - 1, 0)
 			attack_finished = true
 			attack_sprite = null
+			emit_signal("enemy_finished")
 			return
 
 	previous_attack_frame = current_frame

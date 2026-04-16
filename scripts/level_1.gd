@@ -35,6 +35,7 @@ var enemies_spawned: int = 0
 # The timer node that triggers each enemy spawn
 var spawn_timer: Timer
 
+var player_currency: int = 100  # starting money
 
 func _ready():
 	# Set up the spawn timer
@@ -65,6 +66,14 @@ func spawn_enemy():
 
 	# Then set the lane index so the enemy knows its offset at the end
 	enemy.lane_index = enemies_spawned
+
+
+var tower_costs = {
+	"cannon": 100,
+	"archer": 175,
+	"barracks": 225,
+	"monastery": 300
+}
 
 
 func _can_place_tower(world_pos: Vector2) -> bool:
@@ -116,13 +125,30 @@ func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			var click_pos = get_global_mouse_position()
-			if _can_place_tower(click_pos) and not _is_occupied(click_pos):
-				var tower = tower_scenes[selected_tower].instantiate()
-				tower.global_position = click_pos
-				add_child(tower)
-				placed_towers.append(tower)
-				print("Placed: ", selected_tower)
-			elif _is_occupied(click_pos):
-				print("Too close to another tower!")
-			else:
+
+			# First check: is the spot valid?
+			if not _can_place_tower(click_pos):
 				print("Can't place tower here!")
+				return
+
+			# Second check: is the spot occupied?
+			if _is_occupied(click_pos):
+				print("Too close to another tower!")
+				return
+
+			# Third check: does the player have enough money?
+			var cost = tower_costs[selected_tower]
+			if player_currency < cost:
+				print("Not enough currency! Need ", cost, ", but have ", player_currency)
+				return
+
+			# If all checks pass → place tower
+			player_currency -= cost
+
+			var tower = tower_scenes[selected_tower].instantiate()
+			tower.global_position = click_pos
+			add_child(tower)
+			placed_towers.append(tower)
+
+			print("Placed: ", selected_tower, " (Cost: ", cost, ")", " Currency left: ", player_currency)
+			print("Currency left: ", player_currency)
