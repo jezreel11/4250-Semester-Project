@@ -12,3 +12,4 @@ func _ready():
 
 func _draw():
     draw_circle(Vector2.ZERO, attack_range, Color(1, 1, 1, 0.1))
+    super._draw()
