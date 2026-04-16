@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
 [ext_resource type="Script" uid="uid://527425kq1lt8" path="res://scripts/level_1.gd" id="1_odhdn"]
-[ext_resource type="PackedScene" uid="uid://chfm1c1paxb7c" path="res://scenes/Towers/Tower.tscn" id="3_odhdn"]
 
 [sub_resource type="Curve2D" id="Curve2D_6ovph"]
 bake_interval = 65.51
@@ -10,6 +9,27 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, -17, 167, 0, 0, 0, 0, 103, 167, 0, 0, 0, 0, 106, 262, 0, 0, 0, 0, 153, 263, 0, 0, 0, 0, 155, 87, 0, 0, 0, 0, 229, 90, 0, 0, 0, 0, 236, 264, 0, 0, 0, 0, 392, 263, 0, 0, 0, 0, 391, 105, 0, 0, 0, 0, 345, 105, 0, 0, 0, 0, 347, 213, 0, 0, 0, 0, 281, 214, 0, 0, 0, 0, 282, 59, 0, 0, 0, 0, 439, 57, 0, 0, 0, 0, 442, 247, 0, 0, 0, 0, 536, 246, 0, 0, 0, 0, 537, 185, 0, 0, 0, 0, 585, 185)
 }
 point_count = 18
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bwv4p"]
+size = Vector2(244, 47)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_odhdn"]
+size = Vector2(99.5, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dw26h"]
+size = Vector2(134, 134.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lrl65"]
+size = Vector2(64.5, 62.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_76388"]
+size = Vector2(47.25, 114)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_svatc"]
+size = Vector2(52, 190)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ecr63"]
+size = Vector2(65, 49)
 
 [node name="Level1" type="Node2D" unique_id=1979386671]
 script = ExtResource("1_odhdn")
@@ -22,8 +42,57 @@ position = Vector2(-316, -167)
 [node name="Path2D" type="Path2D" parent="GameManager/Map" unique_id=1211744239]
 curve = SubResource("Curve2D_6ovph")
 
+[node name="PlacementZones" type="Node2D" parent="GameManager/Map" unique_id=943961749]
+
+[node name="Zone1" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=2095930709]
+position = Vector2(142, 48.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone1" unique_id=1528072633]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_bwv4p")
+
+[node name="Zone2" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=829301846]
+position = Vector2(87.25, 111.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone2" unique_id=1848667103]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_odhdn")
+
+[node name="Zone3" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=103587307]
+position = Vector2(521, 97.25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone3" unique_id=1968590287]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_dw26h")
+
+[node name="Zone4" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=2129152749]
+position = Vector2(488.25, 199.75)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone4" unique_id=1133646715]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_lrl65")
+
+[node name="Zone5" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=1223648560]
+position = Vector2(63.375, 240)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone5" unique_id=298595005]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_76388")
+
+[node name="Zone6" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=1339660906]
+position = Vector2(192, 198)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone6" unique_id=2107795916]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_svatc")
+
+[node name="Zone7" type="Area2D" parent="GameManager/Map/PlacementZones" unique_id=2107590502]
+position = Vector2(580.5, 275.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone7" unique_id=1101366124]
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_ecr63")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)
 zoom = Vector2(1.8, 1.8)
-
-[node name="Tower" parent="." unique_id=1763118318 instance=ExtResource("3_odhdn")]

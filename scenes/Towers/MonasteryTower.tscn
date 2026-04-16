@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://d3u22sic45wa0"]
+
+[ext_resource type="Script" uid="uid://jp0lw10yvj1p" path="res://scripts/towers/monastery_tower.gd" id="1_oumqu"]
+[ext_resource type="Texture2D" uid="uid://b1eixhwwvfm7o" path="res://assets/Buildings/Blue Buildings/Monastery.png" id="2_0i30i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oumqu"]
+radius = 22.0
+
+[node name="MonasteryTower" type="Node2D" unique_id=30325149]
+scale = Vector2(0.3, 0.3)
+script = ExtResource("1_oumqu")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1251733263]
+texture = ExtResource("2_0i30i")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=457476376]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1260169048]
+position = Vector2(-3.3333335, 40)
+scale = Vector2(2.5, 5)
+shape = SubResource("CircleShape2D_oumqu")

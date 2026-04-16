@@ -1,21 +1,21 @@
 [gd_scene format=3 uid="uid://chfm1c1paxb7c"]
 
 [ext_resource type="Script" uid="uid://8wby3drq7jvx" path="res://scripts/towers/tower.gd" id="1_hlosp"]
-[ext_resource type="Texture2D" uid="uid://bdlb08w1souck" path="res://assets/Buildings/Red Buildings/Tower.png" id="2_hlosp"]
+[ext_resource type="Texture2D" uid="uid://cw5o383t4iba5" path="res://assets/Buildings/Blue Buildings/Tower.png" id="2_hlosp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eywsc"]
+radius = 5.0
 
 [node name="Tower" type="Node2D" unique_id=1763118318]
 script = ExtResource("1_hlosp")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1453101056]
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_hlosp")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=893720906]
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1579995895]
-visible = false
 scale = Vector2(2.5, 5)
 shape = SubResource("CircleShape2D_eywsc")
