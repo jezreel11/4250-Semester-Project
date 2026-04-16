@@ -4,6 +4,9 @@ extends Node
 
 # Adds the comand to the console list
 func _ready() -> void:
+	# Pauses game while console is open
+	Console.pause_enabled = true
+
 	# for names sake try to follow the naming conventions below
 	# below is a example of how to add a comand to the console
 	# the "example_comand" is what you type in the console in game

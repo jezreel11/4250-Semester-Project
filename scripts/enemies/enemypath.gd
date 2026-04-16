@@ -1,4 +1,4 @@
-extends PathFollow2D 
+extends PathFollow2D
 
 @export var speed : float = 80.0
 @onready var attack_scene = preload("res://assets/Animations/LancerAttacking.tscn")
@@ -52,4 +52,3 @@ func _process_attack_loop():
             attack_sprite = null
             return
     previous_attack_frame = current_frame
-		
