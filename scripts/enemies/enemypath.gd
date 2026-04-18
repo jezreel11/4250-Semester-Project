@@ -28,6 +28,7 @@ const LANE_SPACING: float = 32.0
 
 func _ready():
 	original_speed = speed
+	add_to_group("enemies")
 
 
 func _process(delta):
