@@ -186,7 +186,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_5w8p0"]
 radius = 17.0
 
-[node name="WarriorRunning" type="PathFollow2D" unique_id=481969865]
+[node name="Pawn" type="PathFollow2D" unique_id=481969865]
 rotates = false
 cubic_interp = false
 loop = false
@@ -199,7 +199,8 @@ position = Vector2(0, -0.99999976)
 scale = Vector2(0.50390625, 0.5052083)
 sprite_frames = SubResource("SpriteFrames_f8bvm")
 animation = &"Attacking Axe "
-frame_progress = 0.8958342
+frame = 4
+frame_progress = 0.7287593
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D/AnimatedSprite2D" unique_id=336245478]
 position = Vector2(0, 7)
