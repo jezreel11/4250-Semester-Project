@@ -24,6 +24,8 @@ var spawn_timer: Timer			# controls spawn timing
 
 func _ready():
 
+	add_to_group("towers")
+
 	current_health = max_health
 
 	print("Tower placed: ", tower_name, " at ", global_position)

@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
 [ext_resource type="Script" uid="uid://527425kq1lt8" path="res://scripts/level_1.gd" id="1_odhdn"]
+[ext_resource type="Script" uid="uid://fq85tvyvjrso" path="res://scripts/base.gd" id="base_script"]
 
 [sub_resource type="Curve2D" id="Curve2D_6ovph"]
 bake_interval = 65.51
@@ -92,6 +93,10 @@ position = Vector2(580.5, 275.5)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GameManager/Map/PlacementZones/Zone7" unique_id=1101366124]
 scale = Vector2(0.8, 0.8)
 shape = SubResource("RectangleShape2D_ecr63")
+
+[node name="Base" type="Node2D" parent="GameManager/Map" unique_id=683240262]
+position = Vector2(585, 185)
+script = ExtResource("base_script")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)

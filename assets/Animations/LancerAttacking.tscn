@@ -37,7 +37,7 @@ radius = 14.0
 [node name="LancerAttacking" type="CharacterBody2D" unique_id=1454471397]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1111585584]
-scale = Vector2(0.50390625, 0.5052083)
+scale = Vector2(0.45312503, 0.4296875)
 sprite_frames = SubResource("SpriteFrames_r2bgt")
 animation = &"Attacking"
 frame_progress = 0.6336729
