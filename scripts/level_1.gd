@@ -6,6 +6,7 @@ extends Node2D
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
 @onready var placement_zones = $GameManager/Map/PlacementZones
+@onready var insufficient_funds_label: Label = $UI/InsufficientFundsLabel
 
 # Dictionary of all available tower types
 var tower_scenes = {
@@ -35,6 +36,7 @@ var enemies_spawned: int = 0
 var spawn_timer: Timer
 
 var player_currency: int = 100  # starting money
+var insufficient_funds_tween: Tween
 
 func _ready():
 	# Set up the spawn timer
@@ -44,6 +46,9 @@ func _ready():
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	add_child(spawn_timer)
 	spawn_timer.start()
+
+	insufficient_funds_label.modulate.a = 0.0
+	insufficient_funds_label.visible = false
 
 
 func _on_spawn_timer_timeout():
@@ -139,6 +144,7 @@ func _input(event):
 			var cost = tower_costs[selected_tower]
 			if player_currency < cost:
 				print("Not enough currency! Need ", cost, ", but have ", player_currency)
+				_show_insufficient_funds_feedback(cost, event.position)
 				return
 
 			# If all checks pass → place tower
@@ -151,3 +157,35 @@ func _input(event):
 
 			print("Placed: ", selected_tower, " (Cost: ", cost, ")", " Currency left: ", player_currency)
 			print("Currency left: ", player_currency)
+
+
+func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
+	insufficient_funds_label.text = "Not enough coins! Need %d" % cost
+	insufficient_funds_label.visible = true
+	insufficient_funds_label.scale = Vector2(0.85, 0.85)
+	insufficient_funds_label.modulate = Color(1, 0.35, 0.35, 0.0)
+
+	var label_size := insufficient_funds_label.size
+	var viewport_size := get_viewport_rect().size
+	var start_pos := Vector2(
+		clamp(cursor_pos.x - (label_size.x / 2.0), 12.0, viewport_size.x - label_size.x - 12.0),
+		clamp(cursor_pos.y - 36.0, 12.0, viewport_size.y - label_size.y - 12.0)
+	)
+	var end_pos := start_pos + Vector2(0.0, -20.0)
+
+	insufficient_funds_label.position = start_pos
+
+	if insufficient_funds_tween:
+		insufficient_funds_tween.kill()
+
+	insufficient_funds_tween = create_tween()
+	insufficient_funds_tween.set_parallel(true)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 1.0, 0.08)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.12)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.18)
+	insufficient_funds_tween.set_parallel(false)
+	insufficient_funds_tween.tween_interval(0.6)
+	insufficient_funds_tween.set_parallel(true)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.25)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -10.0), 0.25)
+	insufficient_funds_tween.finished.connect(func(): insufficient_funds_label.visible = false, CONNECT_ONE_SHOT)

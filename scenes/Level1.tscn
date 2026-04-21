@@ -101,3 +101,17 @@ script = ExtResource("base_script")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
 position = Vector2(-2, -1)
 zoom = Vector2(1.8, 1.8)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=803471221]
+
+[node name="InsufficientFundsLabel" type="Label" parent="UI" unique_id=104702337]
+offset_left = 180.0
+offset_top = 22.0
+offset_right = 510.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(1, 0.345098, 0.345098, 1)
+theme_override_colors/font_outline_color = Color(0.203922, 0.0470588, 0.0470588, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "Not enough coins!"
+horizontal_alignment = 1
