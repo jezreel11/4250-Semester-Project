@@ -17,7 +17,7 @@ func _update_attack_visuals():
 	if attack_sprite == null or target_tower == null or not is_instance_valid(target_tower):
 		return
 
-	var offset := target_tower.global_position - global_position
+	var offset: Vector2 = target_tower.global_position - global_position
 	var abs_x := absf(offset.x)
 	var abs_y := absf(offset.y)
 	var next_animation: StringName = &"Attacking Right"
