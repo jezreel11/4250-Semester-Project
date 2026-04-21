@@ -7,6 +7,8 @@ class_name EnemyPath
 @export var max_health: int = 100
 @export var attack_scene: PackedScene
 @export var idle_scene: PackedScene
+@export var death_effect_scene: PackedScene = preload("res://assets/Animations/Death.tscn")
+@export var death_animation_name: StringName = &"Explotion"
 @export var running_animation_name: StringName = &"Running"
 @export var attack_animation_name: StringName = &"Attacking"
 @export var idle_animation_name: StringName = &"Idle"
@@ -22,6 +24,7 @@ var attack_count: int = 0
 const MAX_ATTACKS: int = 15
 var previous_attack_frame: int = -1
 var attack_finished: bool = false
+var is_dying: bool = false
 var original_speed: float = 0.0
 var target_tower = null
 
@@ -225,11 +228,14 @@ func _process_attack_loop(end_sequence: bool):
 
 
 func take_damage(amount: int):
+	if is_dying:
+		return
+
 	current_health -= amount
 	current_health = max(current_health, 0)
 	queue_redraw()
 	if current_health <= 0:
-		queue_free()
+		_die()
 
 
 func _draw():
@@ -266,3 +272,32 @@ func _play_sprite_animation(sprite: AnimatedSprite2D, animation_name: StringName
 
 func _update_attack_visuals():
 	pass
+
+
+func _die():
+	if is_dying:
+		return
+
+	is_dying = true
+	_spawn_death_effect()
+	queue_free()
+
+
+func _spawn_death_effect():
+	if death_effect_scene == null:
+		return
+
+	var death_effect := death_effect_scene.instantiate()
+	var effect_parent := get_parent()
+	if effect_parent == null:
+		return
+
+	effect_parent.add_child(death_effect)
+
+	if death_effect is Node2D:
+		death_effect.global_position = global_position
+
+	var death_sprite: AnimatedSprite2D = death_effect.get_node_or_null("AnimatedSprite2D")
+	if death_sprite:
+		_play_sprite_animation(death_sprite, death_animation_name)
+		death_sprite.animation_finished.connect(func(): death_effect.queue_free(), CONNECT_ONE_SHOT)
