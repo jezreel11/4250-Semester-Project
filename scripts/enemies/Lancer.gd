@@ -4,7 +4,7 @@ class_name LancerEnemy
 
 func _ready():
 	max_health = 140
-	attack_damage = 20
+	attack_damage = 10
 	running_animation_name = &"Running"
 	attack_animation_name = &"Attacking Right"
 	idle_animation_name = &"Running"

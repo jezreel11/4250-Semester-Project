@@ -4,7 +4,7 @@ class_name WarriorEnemy
 
 func _ready():
 	max_health = 160
-	attack_damage = 25
+	attack_damage = 20
 	running_animation_name = &"Running"
 	attack_animation_name = &"Attacking"
 	idle_animation_name = &"Running"

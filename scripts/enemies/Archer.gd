@@ -4,7 +4,7 @@ class_name ArcherEnemy
 
 func _ready():
 	max_health = 180
-	attack_damage = 30
+	attack_damage = 15
 	detect_range = 100.0
 	running_animation_name = &"Running"
 	attack_animation_name = &"Shooting"
