@@ -21,9 +21,9 @@ var original_speed: float = 0.0
 var target_tower = null
 
 # Lane offset — each enemy gets a unique index so they spread out
-# alternating up and down at the end of the path instead of stacking
 var lane_index: int = 0
 const LANE_SPACING: float = 32.0
+var end_offset: Vector2 = Vector2.ZERO
 
 
 func _ready():
@@ -34,6 +34,11 @@ func _ready():
 func _process(delta):
 	# End-of-path attack sequence
 	if has_reached_end:
+		# Force children to offset position every frame
+		if has_node("CharacterBody2D"):
+			$CharacterBody2D.position = end_offset
+		if attack_instance:
+			attack_instance.position = end_offset
 		if not attack_finished:
 			_process_attack_loop(true)
 		return
@@ -64,11 +69,10 @@ func _process(delta):
 		speed = 0
 		has_reached_end = true
 
-		var offset = (lane_index / 2 + 1) * LANE_SPACING
-		if lane_index % 2 == 0:
-			position.y += offset
-		else:
-			position.y -= offset
+		# Spread enemies so they don't stack — line up in rows
+		var col = lane_index % 3
+		var row = lane_index / 3
+		end_offset = Vector2(-(col + 1) * LANE_SPACING, (row - 1) * LANE_SPACING)
 
 		target_tower = _find_nearest_tower()
 		start_attack()
