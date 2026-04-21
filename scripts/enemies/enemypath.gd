@@ -1,14 +1,19 @@
 extends PathFollow2D
+class_name EnemyPath
 
 @export var speed: float = 80.0
 @export var attack_damage: int = 10
 @export var detect_range: float = 60.0
-@onready var attack_scene = preload("res://assets/Animations/LancerAttacking.tscn")
-@onready var idle_scene = preload("res://assets/Animations/LancerIdle.tscn")
+@export var max_health: int = 100
+@export var attack_scene: PackedScene
+@export var idle_scene: PackedScene
+@export var running_animation_name: StringName = &"Running"
+@export var attack_animation_name: StringName = &"Attacking"
+@export var idle_animation_name: StringName = &"Idle"
+@export var use_embedded_attack_animation: bool = false
+@export var use_embedded_idle_animation: bool = false
 
-var max_health: int = 100
-var current_health: int = 100
-
+var current_health: int = 0
 var has_reached_end: bool = false
 var is_attacking: bool = false
 var attack_instance: Node = null
@@ -17,47 +22,42 @@ var attack_count: int = 0
 const MAX_ATTACKS: int = 15
 var previous_attack_frame: int = -1
 var attack_finished: bool = false
-
-signal enemy_finished
-
-
 var original_speed: float = 0.0
-
 var target_tower = null
 
-
-# Lane offset — each enemy gets a unique index so they spread out
+# Lane offset so enemies can spread out when they reach the end of the path.
 var lane_index: int = 0
 const LANE_SPACING: float = 32.0
 var end_offset: Vector2 = Vector2.ZERO
 
+signal enemy_finished
+
+@onready var main_sprite: AnimatedSprite2D = get_node_or_null("CharacterBody2D/AnimatedSprite2D")
+
 
 func _ready():
 	original_speed = speed
+	current_health = max_health
 	add_to_group("enemies")
+	_play_main_sprite_animation(running_animation_name)
 
 
 func _process(delta):
-	# End-of-path attack sequence
 	if has_reached_end:
-		# Force children to offset position every frame
 		if has_node("CharacterBody2D"):
 			$CharacterBody2D.position = end_offset
-		if attack_instance:
+		if attack_instance and attack_instance != $CharacterBody2D:
 			attack_instance.position = end_offset
-		# Stop attacking if target is destroyed and switch to idle
 		if is_instance_valid(target_tower) and target_tower.current_health <= 0 and not attack_finished:
 			attack_finished = true
 			_switch_to_idle()
 			emit_signal("enemy_finished")
-		# Keep idle animation positioned at end
-		if attack_finished and attack_instance:
+		if attack_finished and attack_instance and attack_instance != $CharacterBody2D:
 			attack_instance.position = end_offset
 		if not attack_finished:
 			_process_attack_loop(true)
 		return
 
-	# Mid-path attacking a tower
 	if is_attacking:
 		if not is_instance_valid(target_tower):
 			_resume_movement()
@@ -65,10 +65,8 @@ func _process(delta):
 		_process_attack_loop(false)
 		return
 
-	# Move along path
 	progress += speed * delta
 
-	# Check for a tower nearby while walking
 	var nearby_tower = _find_tower_in_range()
 	if nearby_tower:
 		is_attacking = true
@@ -77,13 +75,11 @@ func _process(delta):
 		start_attack()
 		return
 
-	# Check if reached end of path
 	if progress_ratio >= 1.0:
 		progress_ratio = 1.0
 		speed = 0
 		has_reached_end = true
 
-		# Spread enemies so they don't stack — line up in rows
 		var col = lane_index % 3
 		var row = lane_index / 3
 		end_offset = Vector2(-(col + 1) * LANE_SPACING, (row - 1) * LANE_SPACING)
@@ -96,18 +92,33 @@ func _resume_movement():
 	is_attacking = false
 	attack_count = 0
 	previous_attack_frame = -1
-	if attack_instance:
+
+	if attack_instance and attack_instance != $CharacterBody2D:
 		attack_instance.queue_free()
-		attack_instance = null
+
+	attack_instance = null
 	attack_sprite = null
 	speed = original_speed
-	if has_node("CharacterBody2D/AnimatedSprite2D"):
-		$CharacterBody2D/AnimatedSprite2D.visible = true
+
+	if main_sprite:
+		main_sprite.visible = true
+		_play_main_sprite_animation(running_animation_name)
 
 
 func start_attack():
-	if has_node("CharacterBody2D/AnimatedSprite2D"):
-		$CharacterBody2D/AnimatedSprite2D.visible = false
+	if use_embedded_attack_animation and main_sprite:
+		attack_instance = $CharacterBody2D
+		attack_sprite = main_sprite
+		main_sprite.visible = true
+		_play_main_sprite_animation(attack_animation_name)
+		previous_attack_frame = attack_sprite.frame
+		return
+
+	if main_sprite:
+		main_sprite.visible = false
+
+	if attack_scene == null:
+		return
 
 	attack_instance = attack_scene.instantiate()
 	attack_instance.position = Vector2.ZERO
@@ -115,27 +126,36 @@ func start_attack():
 
 	attack_sprite = attack_instance.get_node_or_null("AnimatedSprite2D")
 	if attack_sprite:
-		attack_sprite.animation = "Attacking"
-		attack_sprite.play()
+		_play_sprite_animation(attack_sprite, attack_animation_name)
 		previous_attack_frame = attack_sprite.frame
 
 
 func _switch_to_idle():
-	# Remove attack instance and switch to idle animation
-	if attack_instance:
+	if use_embedded_idle_animation and main_sprite:
+		attack_instance = $CharacterBody2D
+		attack_sprite = main_sprite
+		main_sprite.visible = true
+		_play_main_sprite_animation(idle_animation_name, running_animation_name)
+		return
+
+	if attack_instance and attack_instance != $CharacterBody2D:
 		attack_instance.queue_free()
 		attack_instance = null
 
-	# Create idle instance
+	if idle_scene == null:
+		if main_sprite:
+			main_sprite.visible = true
+			_play_main_sprite_animation(running_animation_name)
+		return
+
 	var idle_instance = idle_scene.instantiate()
 	idle_instance.position = end_offset
 	add_child(idle_instance)
+	attack_instance = idle_instance
 
-	# Update reference for drawing
 	attack_sprite = idle_instance.get_node_or_null("AnimatedSprite2D")
 	if attack_sprite:
-		attack_sprite.animation = "Idle"
-		attack_sprite.play()
+		_play_sprite_animation(attack_sprite, idle_animation_name, running_animation_name)
 
 
 func _find_tower_in_range() -> Node:
@@ -169,28 +189,23 @@ func _process_attack_loop(end_sequence: bool):
 	if previous_attack_frame > current_frame:
 		attack_count += 1
 
-		# Deal damage each animation cycle
-		if not is_instance_valid(target_tower):
-			if end_sequence:
-				target_tower = _find_nearest_tower()
+		if not is_instance_valid(target_tower) and end_sequence:
+			target_tower = _find_nearest_tower()
+
 		if is_instance_valid(target_tower):
 			target_tower.take_damage(attack_damage)
 
-		# End-of-path: stop if target is destroyed, no target, or after MAX_ATTACKS
 		if end_sequence:
 			var should_stop = false
-			# Stop if no valid target
 			if not is_instance_valid(target_tower):
 				should_stop = true
-			# Stop if target is destroyed
 			elif target_tower.current_health <= 0:
 				should_stop = true
-			# Stop after max attacks
 			elif attack_count >= MAX_ATTACKS:
 				should_stop = true
 
 			if should_stop:
-				var frame_count = attack_sprite.sprite_frames.get_frame_count("Attacking")
+				var frame_count = attack_sprite.sprite_frames.get_frame_count(String(attack_sprite.animation))
 				attack_sprite.stop()
 				attack_sprite.frame = max(frame_count - 1, 0)
 				attack_finished = true
@@ -198,7 +213,6 @@ func _process_attack_loop(end_sequence: bool):
 				emit_signal("enemy_finished")
 				return
 
-		# Mid-path: resume walking once the tower is dead
 		if not end_sequence and not is_instance_valid(target_tower):
 			_resume_movement()
 			return
@@ -224,3 +238,23 @@ func _draw():
 
 	var fill_w = bar_w * (float(current_health) / float(max_health))
 	draw_rect(Rect2(bar_x, bar_y, fill_w, bar_h), Color(1, 0, 0, 1))
+
+
+func _play_main_sprite_animation(animation_name: StringName, fallback_animation: StringName = &""):
+	if main_sprite:
+		_play_sprite_animation(main_sprite, animation_name, fallback_animation)
+
+
+func _play_sprite_animation(sprite: AnimatedSprite2D, animation_name: StringName, fallback_animation: StringName = &""):
+	if sprite == null or sprite.sprite_frames == null:
+		return
+
+	var animation_to_play := animation_name
+	if not sprite.sprite_frames.has_animation(animation_to_play):
+		if fallback_animation != &"" and sprite.sprite_frames.has_animation(fallback_animation):
+			animation_to_play = fallback_animation
+		else:
+			return
+
+	sprite.animation = animation_to_play
+	sprite.play()

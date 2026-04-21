@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bgef3gq878583"]
 
-[ext_resource type="Script" uid="uid://dpbhwxgajqss4" path="res://scripts/enemies/enemypath.gd" id="1_nkjpd"]
+[ext_resource type="Script" path="res://scripts/enemies/Pawn.gd" id="1_nkjpd"]
 [ext_resource type="Texture2D" uid="uid://dnqpkhriok5xl" path="res://assets/Units/Red Units/Pawn/Pawn_Interact Axe.png" id="2_6oqye"]
 [ext_resource type="Texture2D" uid="uid://dy18npyer5m27" path="res://assets/Units/Red Units/Pawn/Pawn_Interact Knife.png" id="3_o8o5r"]
 [ext_resource type="Texture2D" uid="uid://be4ugydd6x05s" path="res://assets/Units/Red Units/Pawn/Pawn_Run Axe.png" id="4_kpnrf"]

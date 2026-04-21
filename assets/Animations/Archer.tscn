@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dym5w63osw1ab"]
 
-[ext_resource type="Script" uid="uid://dpbhwxgajqss4" path="res://scripts/enemies/enemypath.gd" id="1_hh1yo"]
+[ext_resource type="Script" path="res://scripts/enemies/Archer.gd" id="1_hh1yo"]
 [ext_resource type="Texture2D" uid="uid://b7ydmkgypqv1s" path="res://assets/Units/Red Units/Archer/Arrow.png" id="2_7qrr3"]
 [ext_resource type="Texture2D" uid="uid://c24epkuolrwig" path="res://assets/Units/Red Units/Archer/Archer_Run.png" id="3_dhs3h"]
 [ext_resource type="Texture2D" uid="uid://cuxlcbky4feju" path="res://assets/Units/Red Units/Archer/Archer_Shoot.png" id="4_yga3u"]
