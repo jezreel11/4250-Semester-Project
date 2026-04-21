@@ -1,8 +1,7 @@
 extends Node2D
 
 # Preloading the enemy scenes
-@export var enemy_scene = preload("res://assets/Animations/LancerRunning.tscn")
-@export var enemy_attack = preload("res://assets/Animations/LancerAttacking.tscn")
+@export var enemy_scene = preload("res://assets/Animations/Lancer.tscn")
 
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")

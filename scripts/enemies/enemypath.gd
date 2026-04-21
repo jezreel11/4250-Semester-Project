@@ -55,6 +55,7 @@ func _process(delta):
 		if attack_finished and attack_instance and attack_instance != $CharacterBody2D:
 			attack_instance.position = end_offset
 		if not attack_finished:
+			_update_attack_visuals()
 			_process_attack_loop(true)
 		return
 
@@ -62,6 +63,7 @@ func _process(delta):
 		if not is_instance_valid(target_tower):
 			_resume_movement()
 			return
+		_update_attack_visuals()
 		_process_attack_loop(false)
 		return
 
@@ -111,6 +113,7 @@ func start_attack():
 		attack_sprite = main_sprite
 		main_sprite.visible = true
 		_play_main_sprite_animation(attack_animation_name)
+		_update_attack_visuals()
 		previous_attack_frame = attack_sprite.frame
 		return
 
@@ -127,6 +130,7 @@ func start_attack():
 	attack_sprite = attack_instance.get_node_or_null("AnimatedSprite2D")
 	if attack_sprite:
 		_play_sprite_animation(attack_sprite, attack_animation_name)
+		_update_attack_visuals()
 		previous_attack_frame = attack_sprite.frame
 
 
@@ -258,3 +262,7 @@ func _play_sprite_animation(sprite: AnimatedSprite2D, animation_name: StringName
 
 	sprite.animation = animation_to_play
 	sprite.play()
+
+
+func _update_attack_visuals():
+	pass
