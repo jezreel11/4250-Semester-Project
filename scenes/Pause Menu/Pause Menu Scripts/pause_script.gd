@@ -26,6 +26,15 @@ func _ready() -> void:
 	button_MainMenu.pressed.connect(go_to_main_menu)
 	button_Quit.pressed.connect(quit_game)
 
+	# Connect to base game over signal
+	var base = get_tree().root.get_node_or_null("Level1/GameManager/Map/Base")
+	if base:
+		base.game_over.connect(_on_game_over)
+
+
+func _on_game_over():
+	pause_game()
+
 
 func _setup_pause_key():
 	if InputMap.has_action(PAUSE_ACTION):

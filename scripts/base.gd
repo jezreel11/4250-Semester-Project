@@ -3,17 +3,24 @@ extends Node2D
 @export var max_health: int = 500
 var current_health: int
 
+signal game_over
+
 func _ready():
 	current_health = max_health
 	add_to_group("towers")
 
 func take_damage(amount: int):
+	# Don't take damage if already destroyed
+	if current_health <= 0:
+		return
+
 	current_health -= amount
 	current_health = max(current_health, 0)
 	queue_redraw()
 	print("Base HP: ", current_health, " / ", max_health)
 	if current_health <= 0:
 		print("Base destroyed! Game Over!")
+		emit_signal("game_over")
 
 func _draw():
 	var bar_w = 6.0

@@ -4,6 +4,7 @@ extends PathFollow2D
 @export var attack_damage: int = 10
 @export var detect_range: float = 60.0
 @onready var attack_scene = preload("res://assets/Animations/LancerAttacking.tscn")
+@onready var idle_scene = preload("res://assets/Animations/LancerIdle.tscn")
 
 var max_health: int = 100
 var current_health: int = 100
@@ -43,6 +44,14 @@ func _process(delta):
 		if has_node("CharacterBody2D"):
 			$CharacterBody2D.position = end_offset
 		if attack_instance:
+			attack_instance.position = end_offset
+		# Stop attacking if target is destroyed and switch to idle
+		if is_instance_valid(target_tower) and target_tower.current_health <= 0 and not attack_finished:
+			attack_finished = true
+			_switch_to_idle()
+			emit_signal("enemy_finished")
+		# Keep idle animation positioned at end
+		if attack_finished and attack_instance:
 			attack_instance.position = end_offset
 		if not attack_finished:
 			_process_attack_loop(true)
@@ -111,6 +120,24 @@ func start_attack():
 		previous_attack_frame = attack_sprite.frame
 
 
+func _switch_to_idle():
+	# Remove attack instance and switch to idle animation
+	if attack_instance:
+		attack_instance.queue_free()
+		attack_instance = null
+
+	# Create idle instance
+	var idle_instance = idle_scene.instantiate()
+	idle_instance.position = end_offset
+	add_child(idle_instance)
+
+	# Update reference for drawing
+	attack_sprite = idle_instance.get_node_or_null("AnimatedSprite2D")
+	if attack_sprite:
+		attack_sprite.animation = "Idle"
+		attack_sprite.play()
+
+
 func _find_tower_in_range() -> Node:
 	var towers = get_tree().get_nodes_in_group("towers")
 	for tower in towers:
@@ -149,15 +176,27 @@ func _process_attack_loop(end_sequence: bool):
 		if is_instance_valid(target_tower):
 			target_tower.take_damage(attack_damage)
 
-		# End-of-path: stop after MAX_ATTACKS and freeze
-		if end_sequence and attack_count >= MAX_ATTACKS:
-			var frame_count = attack_sprite.sprite_frames.get_frame_count("Attacking")
-			attack_sprite.stop()
-			attack_sprite.frame = max(frame_count - 1, 0)
-			attack_finished = true
-			attack_sprite = null
-			emit_signal("enemy_finished")
-			return
+		# End-of-path: stop if target is destroyed, no target, or after MAX_ATTACKS
+		if end_sequence:
+			var should_stop = false
+			# Stop if no valid target
+			if not is_instance_valid(target_tower):
+				should_stop = true
+			# Stop if target is destroyed
+			elif target_tower.current_health <= 0:
+				should_stop = true
+			# Stop after max attacks
+			elif attack_count >= MAX_ATTACKS:
+				should_stop = true
+
+			if should_stop:
+				var frame_count = attack_sprite.sprite_frames.get_frame_count("Attacking")
+				attack_sprite.stop()
+				attack_sprite.frame = max(frame_count - 1, 0)
+				attack_finished = true
+				attack_sprite = null
+				emit_signal("enemy_finished")
+				return
 
 		# Mid-path: resume walking once the tower is dead
 		if not end_sequence and not is_instance_valid(target_tower):
