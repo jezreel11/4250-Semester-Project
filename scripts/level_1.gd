@@ -6,14 +6,44 @@ extends Node2D
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
 @onready var placement_zones = $GameManager/Map/PlacementZones
+@onready var base_node = $GameManager/Map/Base
 @onready var game_message_label: Label = $UI/InsufficientFundsLabel
+@onready var currency_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/GoldBadge/GoldPadding/CurrencyLabel
+@onready var base_health_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/HealthBadge/HealthPadding/BaseHealthLabel
+@onready var wave_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/WaveBadge/WavePadding/WaveLabel
+@onready var selected_tower_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/ReadyBadge/ReadyPadding/SelectedTowerLabel
+@onready var cannon_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/CannonButton
+@onready var archer_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/ArcherButton
+@onready var barracks_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/BarracksButton
+@onready var monastery_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/MonasteryButton
 
 # Dictionary of all available tower types
 var tower_scenes = {
-	"cannon":    preload("res://scenes/towers/Tower.tscn"),
-	"archer":    preload("res://scenes/towers/ArcherTower.tscn"),
-	"barracks":  preload("res://scenes/towers/BarracksTower.tscn"),
+	"cannon": preload("res://scenes/towers/Tower.tscn"),
+	"archer": preload("res://scenes/towers/ArcherTower.tscn"),
+	"barracks": preload("res://scenes/towers/BarracksTower.tscn"),
 	"monastery": preload("res://scenes/towers/MonasteryTower.tscn")
+}
+
+var tower_costs = {
+	"cannon": 100,
+	"archer": 175,
+	"barracks": 225,
+	"monastery": 300
+}
+
+var tower_display_names = {
+	"cannon": "Cannon",
+	"archer": "Archer",
+	"barracks": "Barracks",
+	"monastery": "Monastery"
+}
+
+var tower_hotkeys = {
+	"cannon": "1",
+	"archer": "2",
+	"barracks": "3",
+	"monastery": "4"
 }
 
 # Tracks all placed towers in order
@@ -34,10 +64,12 @@ var enemies_spawned: int = 0
 
 # The timer node that triggers each enemy spawn
 var spawn_timer: Timer
+var tower_buttons: Dictionary
 
-var player_currency: int = 100  # starting money
+var player_currency: int = 100 # starting money
 var game_message_tween: Tween
 var game_message_id: int = 0
+
 
 func _ready():
 	# Set up the spawn timer
@@ -51,6 +83,18 @@ func _ready():
 	game_message_label.modulate.a = 0.0
 	game_message_label.visible = false
 
+	tower_buttons = {
+		"cannon": cannon_button,
+		"archer": archer_button,
+		"barracks": barracks_button,
+		"monastery": monastery_button
+	}
+
+	_connect_tower_buttons()
+	base_node.health_changed.connect(_on_base_health_changed)
+	_on_base_health_changed(base_node.current_health, base_node.max_health)
+	_refresh_hud()
+
 
 func _on_spawn_timer_timeout():
 	# Spawn an enemy if we haven't hit the wave size yet
@@ -58,8 +102,10 @@ func _on_spawn_timer_timeout():
 		spawn_enemy()
 		enemies_spawned += 1
 	else:
-		# All enemies spawned — stop the timer
+		# All enemies spawned - stop the timer
 		spawn_timer.stop()
+
+	_refresh_hud()
 
 
 func spawn_enemy():
@@ -73,12 +119,45 @@ func spawn_enemy():
 	enemy.lane_index = enemies_spawned
 
 
-var tower_costs = {
-	"cannon": 100,
-	"archer": 175,
-	"barracks": 225,
-	"monastery": 300
-}
+func _connect_tower_buttons() -> void:
+	cannon_button.pressed.connect(func(): _select_tower("cannon"))
+	archer_button.pressed.connect(func(): _select_tower("archer"))
+	barracks_button.pressed.connect(func(): _select_tower("barracks"))
+	monastery_button.pressed.connect(func(): _select_tower("monastery"))
+
+
+func _select_tower(tower_type: String) -> void:
+	selected_tower = tower_type
+	print("Selected: ", tower_display_names[tower_type])
+	_refresh_hud()
+	_show_game_message("Selected: %s" % tower_display_names[tower_type])
+
+
+func _refresh_hud() -> void:
+	currency_label.text = "Gold: %d" % player_currency
+	wave_label.text = "Wave: %d/%d" % [enemies_spawned, wave_size]
+	selected_tower_label.text = "Ready: %s" % tower_display_names[selected_tower]
+	_update_tower_buttons()
+
+
+func _update_tower_buttons() -> void:
+	for tower_key in tower_buttons.keys():
+		var tower_type: String = String(tower_key)
+		var button: Button = tower_buttons[tower_type]
+		var is_selected: bool = tower_type == selected_tower
+		var is_affordable: bool = player_currency >= tower_costs[tower_type]
+		var label := "%s\n%dg [%s]" % [
+			tower_display_names[tower_type],
+			tower_costs[tower_type],
+			tower_hotkeys[tower_type]
+		]
+		button.text = label
+		button.disabled = not is_affordable
+		button.self_modulate = Color(1.0, 0.94, 0.78, 1.0) if is_selected else Color(0.9, 0.88, 0.84, 1.0)
+
+
+func _on_base_health_changed(current_health: int, max_health: int) -> void:
+	base_health_label.text = "Base HP: %d/%d" % [current_health, max_health]
 
 
 func _can_place_tower(world_pos: Vector2) -> bool:
@@ -108,21 +187,13 @@ func _input(event):
 	# --- TOWER SELECTION ---
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_1:
-			selected_tower = "cannon"
-			print("Selected: Cannon Tower")
-			_show_game_message("Selected: Cannon Tower")
+			_select_tower("cannon")
 		elif event.keycode == KEY_2:
-			selected_tower = "archer"
-			print("Selected: Archer Tower")
-			_show_game_message("Selected: Archer Tower")
+			_select_tower("archer")
 		elif event.keycode == KEY_3:
-			selected_tower = "barracks"
-			print("Selected: Barracks")
-			_show_game_message("Selected: Barracks")
+			_select_tower("barracks")
 		elif event.keycode == KEY_4:
-			selected_tower = "monastery"
-			print("Selected: Monastery")
-			_show_game_message("Selected: Monastery")
+			_select_tower("monastery")
 		elif event.keycode == KEY_BACKSPACE:
 			# Remove the last placed tower
 			if placed_towers.size() > 0:
@@ -130,6 +201,7 @@ func _input(event):
 				last_tower.queue_free()
 				print("Tower removed")
 				_show_game_message("Tower removed")
+				_refresh_hud()
 
 	# --- TOWER PLACEMENT ---
 	if event is InputEventMouseButton:
@@ -151,12 +223,12 @@ func _input(event):
 			# Third check: does the player have enough money?
 			var cost = tower_costs[selected_tower]
 			if player_currency < cost:
-				var insufficient_message := "Not enough currency! Need %d, but have %d." % [cost, player_currency]
+				var insufficient_message := "Not enough coins! Need %d, but have %d." % [cost, player_currency]
 				print(insufficient_message)
 				_show_game_message(insufficient_message, event.position)
 				return
 
-			# If all checks pass → place tower
+			# If all checks pass - place tower
 			player_currency -= cost
 
 			var tower = tower_scenes[selected_tower].instantiate()
@@ -164,11 +236,12 @@ func _input(event):
 			add_child(tower)
 			placed_towers.append(tower)
 
-			var placed_message := "Placed: %s (Cost: %d)" % [selected_tower, cost]
-			var currency_message := "Currency left: %d" % player_currency
+			var placed_message := "Placed: %s (Cost: %d)" % [tower_display_names[selected_tower], cost]
+			var currency_message := "Coins left: %d" % player_currency
 			print(placed_message, " ", currency_message)
 			print(currency_message)
 			_show_game_message("%s. %s" % [placed_message, currency_message])
+			_refresh_hud()
 
 
 func _show_game_message(message: String, cursor_pos: Vector2 = Vector2(-1, -1)):

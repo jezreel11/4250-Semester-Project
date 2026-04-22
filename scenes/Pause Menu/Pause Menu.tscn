@@ -4,6 +4,7 @@
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=77408654 node_paths=PackedStringArray("container_Main", "button_Resume", "button_Restart", "button_MainMenu", "button_Fullscreen", "button_Quit")]
 process_mode = 3
+layer = 10
 script = ExtResource("1_5qgnb")
 container_Main = NodePath("Control")
 button_Resume = NodePath("Control/Pause Menu/Resume Button")
@@ -20,6 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="Control" unique_id=1372062140]
 layout_mode = 1
@@ -28,6 +30,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 color = Color(0.046542805, 0.046542805, 0.046542805, 0.1882353)
 
 [node name="Pause Menu" type="VBoxContainer" parent="Control" unique_id=1775008743]
