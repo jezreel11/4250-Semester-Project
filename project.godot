@@ -30,6 +30,14 @@ version_control/autoload_on_startup=true
 
 enabled=PackedStringArray("res://addons/console/plugin.cfg")
 
+[display]
+
+window/size/viewport_width=1152
+window/size/viewport_height=648
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

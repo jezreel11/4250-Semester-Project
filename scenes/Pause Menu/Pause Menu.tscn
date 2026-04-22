@@ -2,36 +2,48 @@
 
 [ext_resource type="Script" uid="uid://fly4bm3hpurc" path="res://scenes/Pause Menu/Pause Menu Scripts/pause_script.gd" id="1_5qgnb"]
 
-[node name="PauseMenu" type="CanvasLayer" unique_id=77408654 node_paths=PackedStringArray("container_Main", "button_Resume", "button_Restart", "button_MainMenu", "button_Quit")]
+[node name="PauseMenu" type="CanvasLayer" unique_id=77408654 node_paths=PackedStringArray("container_Main", "button_Resume", "button_Restart", "button_MainMenu", "button_Fullscreen", "button_Quit")]
 process_mode = 3
 script = ExtResource("1_5qgnb")
 container_Main = NodePath("Control")
 button_Resume = NodePath("Control/Pause Menu/Resume Button")
 button_Restart = NodePath("Control/Pause Menu/Restart Button")
 button_MainMenu = NodePath("Control/Pause Menu/Main Menu Button")
+button_Fullscreen = NodePath("Control/Pause Menu/Fullscreen Button")
 button_Quit = NodePath("Control/Pause Menu/Quit Game Button")
 
 [node name="Control" type="Control" parent="." unique_id=1740552512]
 process_mode = 3
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="Control" unique_id=1372062140]
-layout_mode = 0
-offset_left = -21.0
-offset_top = -11.0
-offset_right = 1170.0
-offset_bottom = 665.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.046542805, 0.046542805, 0.046542805, 0.1882353)
 
 [node name="Pause Menu" type="VBoxContainer" parent="Control" unique_id=1775008743]
-layout_mode = 0
-offset_left = 340.0
-offset_top = 252.0
-offset_right = 849.0
-offset_bottom = 424.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -120.0
+offset_right = 160.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
 
 [node name="Resume Button" type="Button" parent="Control/Pause Menu" unique_id=1227473208]
 layout_mode = 2
@@ -44,6 +56,10 @@ text = "Restart Level"
 [node name="Main Menu Button" type="Button" parent="Control/Pause Menu" unique_id=1910495081]
 layout_mode = 2
 text = "Main Menu"
+
+[node name="Fullscreen Button" type="Button" parent="Control/Pause Menu" unique_id=615580011]
+layout_mode = 2
+text = "Toggle Fullscreen"
 
 [node name="Quit Game Button" type="Button" parent="Control/Pause Menu" unique_id=220266366]
 layout_mode = 2
