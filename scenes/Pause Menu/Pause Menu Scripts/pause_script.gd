@@ -16,6 +16,9 @@ extends Node
 
 const PAUSE_ACTION = "_pause_toggle"
 const FULLSCREEN_ACTION = "_fullscreen_toggle"
+const BASE_PATH = "Level1/GameManager/Map/Base"
+
+var _connected_base: Node = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -31,15 +34,28 @@ func _ready() -> void:
 	button_Fullscreen.pressed.connect(toggle_fullscreen)
 	button_Quit.pressed.connect(quit_game)
 	_update_fullscreen_button_text()
+	get_tree().node_added.connect(_on_tree_node_added)
 
-	# Connect to base game over signal
-	var base = get_tree().root.get_node_or_null("Level1/GameManager/Map/Base")
-	if base:
-		base.game_over.connect(_on_game_over)
+	# Connect to the active level base whenever it becomes available.
+	call_deferred("_connect_to_base_if_available")
 
 
 func _on_game_over():
 	pause_game()
+
+
+func _on_tree_node_added(_node: Node) -> void:
+	_connect_to_base_if_available()
+
+
+func _connect_to_base_if_available() -> void:
+	var base := get_tree().root.get_node_or_null(BASE_PATH)
+	if base == null or base == _connected_base:
+		return
+	if _connected_base and _connected_base.game_over.is_connected(_on_game_over):
+		_connected_base.game_over.disconnect(_on_game_over)
+	base.game_over.connect(_on_game_over)
+	_connected_base = base
 
 
 func _setup_pause_key():
