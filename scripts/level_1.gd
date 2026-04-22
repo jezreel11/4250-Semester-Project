@@ -37,6 +37,7 @@ var spawn_timer: Timer
 
 var player_currency: int = 100  # starting money
 var insufficient_funds_tween: Tween
+var insufficient_funds_feedback_id: int = 0
 
 func _ready():
 	# Set up the spawn timer
@@ -160,6 +161,9 @@ func _input(event):
 
 
 func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
+	insufficient_funds_feedback_id += 1
+	var feedback_id := insufficient_funds_feedback_id
+
 	insufficient_funds_label.text = "Not enough coins! Need %d" % cost
 	insufficient_funds_label.visible = true
 	insufficient_funds_label.scale = Vector2(0.85, 0.85)
@@ -183,9 +187,23 @@ func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 1.0, 0.08)
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.12)
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.18)
-	insufficient_funds_tween.set_parallel(false)
-	insufficient_funds_tween.tween_interval(10.0)
-	insufficient_funds_tween.set_parallel(true)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.25)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -10.0), 0.25)
-	insufficient_funds_tween.finished.connect(func(): insufficient_funds_label.visible = false, CONNECT_ONE_SHOT)
+	insufficient_funds_tween.finished.connect(func():
+		if feedback_id != insufficient_funds_feedback_id:
+			return
+
+		insufficient_funds_tween = create_tween()
+		insufficient_funds_tween.tween_interval(1.57)
+		insufficient_funds_tween.finished.connect(func():
+			if feedback_id != insufficient_funds_feedback_id:
+				return
+
+			insufficient_funds_tween = create_tween()
+			insufficient_funds_tween.set_parallel(true)
+			insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.25)
+			insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -10.0), 0.25)
+			insufficient_funds_tween.finished.connect(func():
+				if feedback_id == insufficient_funds_feedback_id:
+					insufficient_funds_label.visible = false
+			, CONNECT_ONE_SHOT)
+		, CONNECT_ONE_SHOT)
+	, CONNECT_ONE_SHOT)
