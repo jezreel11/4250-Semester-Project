@@ -3,9 +3,10 @@ class_name LancerEnemy
 
 
 func _ready():
-	max_health = 140
-	attack_damage = 10
-	gold_reward = 30
+	speed = 86.0
+	max_health = 145
+	attack_damage = 11
+	gold_reward = 28
 	gold_drop_animation_name = &"Lancer Gold"
 	running_animation_name = &"Running"
 	attack_animation_name = &"Attacking Right"

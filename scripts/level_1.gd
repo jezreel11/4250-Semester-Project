@@ -1,8 +1,5 @@
 extends Node2D
 
-# Preloading the enemy scenes
-@export var enemy_scene = preload("res://assets/Animations/Lancer.tscn")
-
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
 @onready var game_manager = $GameManager
@@ -55,34 +52,41 @@ var placed_towers = []
 var selected_tower = "cannon"
 
 # --- WAVE SETTINGS ---
-# How many enemies spawn per wave (editable in inspector)
-@export var wave_size: int = 5
+var enemy_scenes = {
+	"pawn": preload("res://assets/Animations/Pawn.tscn"),
+	"lancer": preload("res://assets/Animations/Lancer.tscn"),
+	"archer": preload("res://assets/Animations/Archer.tscn"),
+	"warrior": preload("res://assets/Animations/Warrior.tscn")
+}
 
-# How many seconds between each enemy spawn (editable in inspector)
-@export var spawn_interval: float = 2.0
-
-# Tracks how many enemies have been spawned so far
-var enemies_spawned: int = 0
-
-# The timer node that triggers each enemy spawn
 var spawn_timer: Timer
+var wave_timer: Timer
 var tower_buttons: Dictionary
+var wave_definitions: Array = []
+var current_wave_index: int = -1
+var current_wave_queue: Array = []
+var total_enemies_spawned: int = 0
 
 var player_currency: int = 100 # starting money
 var game_message_tween: Tween
 var game_message_id: int = 0
 const BACKDROP_ZOOM_MULTIPLIER: float = 1.12
 const BATTLEFIELD_MARGIN: Vector2 = Vector2(-18.0, -18.0)
+const INTERMISSION_DURATION: float = 4.0
 
 
 func _ready():
-	# Set up the spawn timer
+	wave_definitions = _build_wave_definitions()
+
 	spawn_timer = Timer.new()
-	spawn_timer.wait_time = spawn_interval
-	spawn_timer.one_shot = false
+	spawn_timer.one_shot = true
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	add_child(spawn_timer)
-	spawn_timer.start()
+
+	wave_timer = Timer.new()
+	wave_timer.one_shot = true
+	wave_timer.timeout.connect(_on_wave_timer_timeout)
+	add_child(wave_timer)
 
 	game_message_label.modulate.a = 0.0
 	game_message_label.visible = false
@@ -100,6 +104,7 @@ func _ready():
 	_sync_backdrop()
 	get_viewport().size_changed.connect(_sync_backdrop)
 	_refresh_hud()
+	_start_wave(0)
 
 
 func _process(_delta: float) -> void:
@@ -107,19 +112,54 @@ func _process(_delta: float) -> void:
 
 
 func _on_spawn_timer_timeout():
-	# Spawn an enemy if we haven't hit the wave size yet
-	if enemies_spawned < wave_size:
-		spawn_enemy()
-		enemies_spawned += 1
-	else:
-		# All enemies spawned - stop the timer
-		spawn_timer.stop()
+	if current_wave_queue.is_empty():
+		return
 
-	_refresh_hud()
+	var enemy_key: String = String(current_wave_queue.pop_front())
+	_spawn_enemy(enemy_key)
+
+	if current_wave_queue.is_empty():
+		if current_wave_index >= wave_definitions.size() - 1:
+			_show_game_message("Final wave deployed!")
+		else:
+			_show_game_message("Wave %d incoming soon." % [current_wave_index + 2])
+			wave_timer.wait_time = INTERMISSION_DURATION
+			wave_timer.start()
+		return
+
+	var current_wave: Dictionary = wave_definitions[current_wave_index]
+	spawn_timer.wait_time = float(current_wave.get("interval", 1.25))
+	spawn_timer.start()
 
 
-func spawn_enemy():
+func _on_wave_timer_timeout() -> void:
+	_start_wave(current_wave_index + 1)
+
+
+func _start_wave(wave_index: int) -> void:
+	if wave_index < 0 or wave_index >= wave_definitions.size():
+		return
+
+	current_wave_index = wave_index
+	var current_wave: Dictionary = wave_definitions[wave_index]
+	current_wave_queue = Array(current_wave.get("enemies", [])).duplicate()
+
+	var wave_name := String(current_wave.get("name", "Wave %d" % [wave_index + 1]))
+	_show_game_message("Wave %d: %s" % [wave_index + 1, wave_name])
+
+	if current_wave_queue.is_empty():
+		return
+
+	spawn_timer.wait_time = 0.6
+	spawn_timer.start()
+
+
+func _spawn_enemy(enemy_key: String):
 	# Instantiate a new enemy and add it to the path
+	var enemy_scene = enemy_scenes.get(enemy_key)
+	if enemy_scene == null:
+		return
+
 	var enemy = enemy_scene.instantiate()
 
 	# Add to scene tree first so the script is fully initialized
@@ -129,7 +169,43 @@ func spawn_enemy():
 		enemy.connect("enemy_defeated", Callable(self, "_on_enemy_defeated"))
 
 	# Then set the lane index so the enemy knows its offset at the end
-	enemy.lane_index = enemies_spawned
+	enemy.lane_index = total_enemies_spawned
+	total_enemies_spawned += 1
+
+
+func _build_wave_definitions() -> Array:
+	return [
+		{
+			"name": "Scouting Party",
+			"interval": 1.45,
+			"enemies": ["pawn", "pawn", "pawn", "pawn", "lancer"]
+		},
+		{
+			"name": "First Push",
+			"interval": 1.25,
+			"enemies": ["pawn", "pawn", "lancer", "pawn", "lancer", "archer", "pawn"]
+		},
+		{
+			"name": "Split Pressure",
+			"interval": 1.12,
+			"enemies": ["pawn", "archer", "lancer", "pawn", "archer", "lancer", "pawn", "warrior"]
+		},
+		{
+			"name": "Iron Advance",
+			"interval": 1.0,
+			"enemies": ["lancer", "pawn", "warrior", "archer", "lancer", "pawn", "archer", "warrior", "pawn"]
+		},
+		{
+			"name": "Crossfire Column",
+			"interval": 0.92,
+			"enemies": ["archer", "pawn", "lancer", "warrior", "archer", "pawn", "warrior", "lancer", "archer", "pawn"]
+		},
+		{
+			"name": "Final Warband",
+			"interval": 0.84,
+			"enemies": ["warrior", "archer", "lancer", "pawn", "warrior", "archer", "pawn", "lancer", "warrior", "archer", "pawn", "warrior"]
+		}
+	]
 
 
 func _connect_tower_buttons() -> void:

@@ -3,9 +3,10 @@ class_name WarriorEnemy
 
 
 func _ready():
-	max_health = 160
-	attack_damage = 20
-	gold_reward = 35
+	speed = 68.0
+	max_health = 225
+	attack_damage = 18
+	gold_reward = 44
 	gold_drop_animation_name = &"Warrior Gold"
 	death_animation_name = &"Bigger Explotion"
 	running_animation_name = &"Running"
