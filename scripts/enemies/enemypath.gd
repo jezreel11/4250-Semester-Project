@@ -34,6 +34,7 @@ var target_tower = null
 # Lane offset so enemies can spread out when they reach the end of the path.
 var lane_index: int = 0
 const LANE_SPACING: float = 32.0
+const GOLD_DROP_SCALE: Vector2 = Vector2(0.45, 0.45)
 var end_offset: Vector2 = Vector2.ZERO
 
 signal enemy_finished
@@ -322,6 +323,7 @@ func _spawn_gold_drop():
 
 	if gold_drop is Node2D:
 		gold_drop.global_position = global_position
+		gold_drop.scale = GOLD_DROP_SCALE
 
 	var gold_sprite: AnimatedSprite2D = gold_drop.get_node_or_null("AnimatedSprite2D")
 	if gold_sprite == null:
