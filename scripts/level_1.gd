@@ -71,6 +71,8 @@ var tower_buttons: Dictionary
 var player_currency: int = 100 # starting money
 var game_message_tween: Tween
 var game_message_id: int = 0
+const BACKDROP_ZOOM_MULTIPLIER: float = 1.12
+const BATTLEFIELD_MARGIN: Vector2 = Vector2(-18.0, -18.0)
 
 
 func _ready():
@@ -135,6 +137,16 @@ func _connect_tower_buttons() -> void:
 
 
 func _select_tower(tower_type: String) -> void:
+	if player_currency < tower_costs[tower_type]:
+		var insufficient_message := "Not enough coins for %s! Need %d, but have %d." % [
+			tower_display_names[tower_type],
+			tower_costs[tower_type],
+			player_currency
+		]
+		print(insufficient_message)
+		_show_game_message(insufficient_message)
+		return
+
 	selected_tower = tower_type
 	print("Selected: ", tower_display_names[tower_type])
 	_refresh_hud()
@@ -162,7 +174,7 @@ func _sync_backdrop() -> void:
 	var cover_scale: float = maxf(viewport_size.x / texture_size.x, viewport_size.y / texture_size.y)
 
 	backdrop.global_position = camera.global_position
-	backdrop.scale = Vector2.ONE * cover_scale
+	backdrop.scale = Vector2.ONE * (cover_scale * BACKDROP_ZOOM_MULTIPLIER)
 
 
 func _update_tower_buttons() -> void:
@@ -177,8 +189,13 @@ func _update_tower_buttons() -> void:
 			tower_hotkeys[tower_type]
 		]
 		button.text = label
-		button.disabled = not is_affordable
-		button.self_modulate = Color(1.0, 0.94, 0.78, 1.0) if is_selected else Color(0.9, 0.88, 0.84, 1.0)
+		button.disabled = false
+		if not is_affordable:
+			button.self_modulate = Color(0.6, 0.58, 0.54, 0.92)
+		elif is_selected:
+			button.self_modulate = Color(1.0, 0.94, 0.78, 1.0)
+		else:
+			button.self_modulate = Color(0.9, 0.88, 0.84, 1.0)
 
 
 func _on_base_health_changed(current_health: int, max_health: int) -> void:
@@ -197,6 +214,48 @@ func _can_place_tower(world_pos: Vector2) -> bool:
 				if abs(local_pos.x) <= half_size.x and abs(local_pos.y) <= half_size.y:
 					return true
 	return false
+
+
+func _is_in_battlefield(world_pos: Vector2) -> bool:
+	var has_zone := false
+	var min_pos := Vector2(INF, INF)
+	var max_pos := Vector2(-INF, -INF)
+
+	for zone in placement_zones.get_children():
+		if not (zone is Area2D):
+			continue
+
+		var shape: CollisionShape2D = zone.get_node_or_null("CollisionShape2D")
+		if shape == null:
+			continue
+
+		var rect_shape := shape.shape as RectangleShape2D
+		if rect_shape == null:
+			continue
+
+		var half_size := (rect_shape.size * shape.global_scale) / 2.0
+		var zone_center := shape.global_position
+
+		min_pos = Vector2(
+			minf(min_pos.x, zone_center.x - half_size.x),
+			minf(min_pos.y, zone_center.y - half_size.y)
+		)
+		max_pos = Vector2(
+			maxf(max_pos.x, zone_center.x + half_size.x),
+			maxf(max_pos.y, zone_center.y + half_size.y)
+		)
+		has_zone = true
+
+	if not has_zone:
+		return true
+
+	var battlefield_rect := Rect2(min_pos, max_pos - min_pos).grow_individual(
+		BATTLEFIELD_MARGIN.x,
+		BATTLEFIELD_MARGIN.y,
+		BATTLEFIELD_MARGIN.x,
+		BATTLEFIELD_MARGIN.y
+	)
+	return battlefield_rect.has_point(world_pos)
 
 
 func _is_occupied(world_pos: Vector2) -> bool:
@@ -232,6 +291,9 @@ func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			var click_pos = get_global_mouse_position()
+
+			if not _is_in_battlefield(click_pos):
+				return
 
 			# First check: is the spot valid?
 			if not _can_place_tower(click_pos):

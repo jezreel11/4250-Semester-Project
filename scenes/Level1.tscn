@@ -98,7 +98,7 @@ texture = ExtResource("3_bg4")
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
 
 [node name="Map" parent="GameManager" unique_id=1542853507 instance=ExtResource("1_6ovph")]
-position = Vector2(-316, -167)
+position = Vector2(-316, -105)
 
 [node name="Path2D" type="Path2D" parent="GameManager/Map" unique_id=1211744239]
 curve = SubResource("Curve2D_6ovph")
