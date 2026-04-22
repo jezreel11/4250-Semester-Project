@@ -5,10 +5,13 @@ class_name EnemyPath
 @export var attack_damage: int = 10
 @export var detect_range: float = 60.0
 @export var max_health: int = 100
+@export var gold_reward: int = 10
 @export var attack_scene: PackedScene
 @export var idle_scene: PackedScene
 @export var death_effect_scene: PackedScene = preload("res://assets/Animations/Death.tscn")
+@export var gold_drop_scene: PackedScene = preload("res://assets/Animations/Gold.tscn")
 @export var death_animation_name: StringName = &"Explotion"
+@export var gold_drop_animation_name: StringName = &"Pawn Gold"
 @export var running_animation_name: StringName = &"Running"
 @export var attack_animation_name: StringName = &"Attacking"
 @export var idle_animation_name: StringName = &"Idle"
@@ -34,6 +37,7 @@ const LANE_SPACING: float = 32.0
 var end_offset: Vector2 = Vector2.ZERO
 
 signal enemy_finished
+signal enemy_defeated(gold_reward: int)
 
 @onready var main_sprite: AnimatedSprite2D = get_node_or_null("CharacterBody2D/AnimatedSprite2D")
 
@@ -279,7 +283,9 @@ func _die():
 		return
 
 	is_dying = true
+	emit_signal("enemy_defeated", gold_reward)
 	_spawn_death_effect()
+	_spawn_gold_drop()
 	queue_free()
 
 
@@ -301,3 +307,29 @@ func _spawn_death_effect():
 	if death_sprite:
 		_play_sprite_animation(death_sprite, death_animation_name)
 		death_sprite.animation_finished.connect(func(): death_effect.queue_free(), CONNECT_ONE_SHOT)
+
+
+func _spawn_gold_drop():
+	if gold_drop_scene == null:
+		return
+
+	var gold_drop := gold_drop_scene.instantiate()
+	var effect_parent := get_parent()
+	if effect_parent == null:
+		return
+
+	effect_parent.add_child(gold_drop)
+
+	if gold_drop is Node2D:
+		gold_drop.global_position = global_position
+
+	var gold_sprite: AnimatedSprite2D = gold_drop.get_node_or_null("AnimatedSprite2D")
+	if gold_sprite == null:
+		return
+
+	_play_sprite_animation(gold_sprite, gold_drop_animation_name)
+
+	if gold_sprite.sprite_frames and gold_sprite.sprite_frames.has_animation(StringName(gold_sprite.animation)):
+		gold_sprite.animation_looped.connect(func():
+			gold_drop.queue_free()
+		, CONNECT_ONE_SHOT)

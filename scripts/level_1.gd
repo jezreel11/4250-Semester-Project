@@ -125,6 +125,9 @@ func spawn_enemy():
 	# Add to scene tree first so the script is fully initialized
 	$GameManager/Map/Path2D.add_child(enemy)
 
+	if enemy is Node and enemy.has_signal("enemy_defeated"):
+		enemy.connect("enemy_defeated", Callable(self, "_on_enemy_defeated"))
+
 	# Then set the lane index so the enemy knows its offset at the end
 	enemy.lane_index = enemies_spawned
 
@@ -200,6 +203,12 @@ func _update_tower_buttons() -> void:
 
 func _on_base_health_changed(current_health: int, max_health: int) -> void:
 	base_health_label.text = "Base HP: %d/%d" % [current_health, max_health]
+
+
+func _on_enemy_defeated(gold_reward: int) -> void:
+	player_currency += gold_reward
+	_refresh_hud()
+	_show_game_message("Earned %d gold" % gold_reward)
 
 
 func _can_place_tower(world_pos: Vector2) -> bool:

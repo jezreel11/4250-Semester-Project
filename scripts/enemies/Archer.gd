@@ -5,6 +5,8 @@ class_name ArcherEnemy
 func _ready():
 	max_health = 180
 	attack_damage = 15
+	gold_reward = 40
+	gold_drop_animation_name = &"Archer Gold"
 	detect_range = 100.0
 	death_animation_name = &"Bigger Explotion"
 	running_animation_name = &"Running"
