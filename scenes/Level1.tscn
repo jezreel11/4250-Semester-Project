@@ -89,6 +89,14 @@ border_color = Color(0.364706, 0.305882, 0.231373, 0.65)
 [node name="Level1" type="Node2D" unique_id=1979386671]
 script = ExtResource("1_odhdn")
 
+[node name="Backdrop" type="ColorRect" parent="." unique_id=147820028]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.329412, 0.513726, 0.305882, 1)
+
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
 
 [node name="Map" parent="GameManager" unique_id=1542853507 instance=ExtResource("1_6ovph")]
@@ -152,9 +160,27 @@ shape = SubResource("RectangleShape2D_ecr63")
 position = Vector2(585, 185)
 script = ExtResource("base_script")
 
+[node name="EnemyGate" type="Node2D" parent="GameManager/Map" unique_id=147820029]
+position = Vector2(-52, 168)
+z_index = 3
+
+[node name="SpawnTrail" type="Polygon2D" parent="GameManager/Map/EnemyGate" unique_id=147820030]
+polygon = PackedVector2Array(-66, -18, 0, -18, 0, 18, -66, 18)
+color = Color(0.901961, 0.815686, 0.627451, 1)
+
+[node name="GateShadow" type="Polygon2D" parent="GameManager/Map/EnemyGate" unique_id=147820031]
+z_index = 1
+polygon = PackedVector2Array(-14, -8, 16, -8, 22, 18, -4, 18)
+color = Color(0.121569, 0.0823529, 0.0588235, 0.38)
+
+[node name="GateHouse" type="Sprite2D" parent="GameManager/Map/EnemyGate" unique_id=147820032]
+position = Vector2(-6, -44)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("8_barracks_icon")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1733811954]
-position = Vector2(-2, -1)
-zoom = Vector2(1.8, 1.8)
+position = Vector2(-6, 8)
+zoom = Vector2(1.08, 1.08)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=803471221]
 
@@ -173,19 +199,8 @@ anchor_right = 0.5
 offset_left = -290.0
 offset_top = 8.0
 offset_right = 290.0
-offset_bottom = 92.0
+offset_bottom = 70.0
 grow_horizontal = 2
-
-[node name="BannerArt" type="TextureRect" parent="UI/HUDRoot/TopBar" unique_id=147820018]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_banner")
-expand_mode = 1
-stretch_mode = 6
 
 [node name="StatsMargin" type="MarginContainer" parent="UI/HUDRoot/TopBar" unique_id=147820003]
 layout_mode = 2
@@ -194,26 +209,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 42
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 42
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
 
 [node name="StatsColumn" type="HBoxContainer" parent="UI/HUDRoot/TopBar/StatsMargin" unique_id=147820004]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="GoldBadge" type="PanelContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820020]
+[node name="GoldBadge" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820020]
 custom_minimum_size = Vector2(126, 0)
 layout_mode = 2
 
 [node name="GoldPadding" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/GoldBadge" unique_id=147820021]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
 
 [node name="CurrencyLabel" type="Label" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/GoldBadge/GoldPadding" unique_id=147820005]
 layout_mode = 2
@@ -223,16 +238,16 @@ theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 17
 text = "Gold: 100"
 
-[node name="HealthBadge" type="PanelContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820022]
+[node name="HealthBadge" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820022]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
 [node name="HealthPadding" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/HealthBadge" unique_id=147820023]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
 
 [node name="BaseHealthLabel" type="Label" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/HealthBadge/HealthPadding" unique_id=147820006]
 layout_mode = 2
@@ -242,35 +257,16 @@ theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 17
 text = "Base HP: 500/500"
 
-[node name="WaveBadge" type="PanelContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820024]
-custom_minimum_size = Vector2(118, 0)
-layout_mode = 2
-
-[node name="WavePadding" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/WaveBadge" unique_id=147820025]
-layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
-
-[node name="WaveLabel" type="Label" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/WaveBadge/WavePadding" unique_id=147820007]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.905882, 0.92549, 1, 1)
-theme_override_colors/font_outline_color = Color(0.239216, 0.14902, 0.0784314, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 17
-text = "Wave: 0/5"
-
-[node name="ReadyBadge" type="PanelContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820026]
+[node name="ReadyBadge" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn" unique_id=147820026]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="ReadyPadding" type="MarginContainer" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/ReadyBadge" unique_id=147820027]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
 
 [node name="SelectedTowerLabel" type="Label" parent="UI/HUDRoot/TopBar/StatsMargin/StatsColumn/ReadyBadge/ReadyPadding" unique_id=147820008]
 layout_mode = 2
@@ -282,15 +278,11 @@ text = "Ready: Cannon"
 
 [node name="BuildBar" type="Control" parent="UI/HUDRoot" unique_id=147820009]
 layout_mode = 1
-anchor_left = 0.5
+anchor_right = 1.0
 anchor_top = 1.0
-anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -250.0
-offset_top = -100.0
-offset_right = 250.0
-offset_bottom = -18.0
-grow_horizontal = 2
+offset_top = -92.0
+offset_bottom = 0.0
 grow_vertical = 0
 
 [node name="DockArt" type="TextureRect" parent="UI/HUDRoot/BuildBar" unique_id=147820019]
@@ -311,10 +303,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 10
 
 [node name="BuildColumn" type="VBoxContainer" parent="UI/HUDRoot/BuildBar/BuildMargin" unique_id=147820011]
 layout_mode = 2
@@ -322,11 +314,11 @@ theme_override_constants/separation = 4
 
 [node name="TowerButtons" type="HBoxContainer" parent="UI/HUDRoot/BuildBar/BuildMargin/BuildColumn" unique_id=147820013]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="CannonButton" type="Button" parent="UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons" unique_id=147820014]
-custom_minimum_size = Vector2(108, 64)
+custom_minimum_size = Vector2(102, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.976471, 0.945098, 0.847059, 1)
 theme_override_colors/font_disabled_color = Color(0.529412, 0.490196, 0.435294, 1)
@@ -346,7 +338,7 @@ alignment = 1
 vertical_icon_alignment = 0
 
 [node name="ArcherButton" type="Button" parent="UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons" unique_id=147820015]
-custom_minimum_size = Vector2(108, 64)
+custom_minimum_size = Vector2(102, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.976471, 0.945098, 0.847059, 1)
 theme_override_colors/font_disabled_color = Color(0.529412, 0.490196, 0.435294, 1)
@@ -366,7 +358,7 @@ alignment = 1
 vertical_icon_alignment = 0
 
 [node name="BarracksButton" type="Button" parent="UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons" unique_id=147820016]
-custom_minimum_size = Vector2(108, 64)
+custom_minimum_size = Vector2(102, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.976471, 0.945098, 0.847059, 1)
 theme_override_colors/font_disabled_color = Color(0.529412, 0.490196, 0.435294, 1)
@@ -386,7 +378,7 @@ alignment = 1
 vertical_icon_alignment = 0
 
 [node name="MonasteryButton" type="Button" parent="UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons" unique_id=147820017]
-custom_minimum_size = Vector2(108, 64)
+custom_minimum_size = Vector2(102, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.976471, 0.945098, 0.847059, 1)
 theme_override_colors/font_disabled_color = Color(0.529412, 0.490196, 0.435294, 1)

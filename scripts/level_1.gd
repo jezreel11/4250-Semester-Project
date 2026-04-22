@@ -5,12 +5,12 @@ extends Node2D
 
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
+@onready var game_manager = $GameManager
 @onready var placement_zones = $GameManager/Map/PlacementZones
 @onready var base_node = $GameManager/Map/Base
 @onready var game_message_label: Label = $UI/InsufficientFundsLabel
 @onready var currency_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/GoldBadge/GoldPadding/CurrencyLabel
 @onready var base_health_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/HealthBadge/HealthPadding/BaseHealthLabel
-@onready var wave_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/WaveBadge/WavePadding/WaveLabel
 @onready var selected_tower_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/ReadyBadge/ReadyPadding/SelectedTowerLabel
 @onready var cannon_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/CannonButton
 @onready var archer_button: Button = $UI/HUDRoot/BuildBar/BuildMargin/BuildColumn/TowerButtons/ArcherButton
@@ -135,7 +135,6 @@ func _select_tower(tower_type: String) -> void:
 
 func _refresh_hud() -> void:
 	currency_label.text = "Gold: %d" % player_currency
-	wave_label.text = "Wave: %d/%d" % [enemies_spawned, wave_size]
 	selected_tower_label.text = "Ready: %s" % tower_display_names[selected_tower]
 	_update_tower_buttons()
 
@@ -233,7 +232,7 @@ func _input(event):
 
 			var tower = tower_scenes[selected_tower].instantiate()
 			tower.global_position = click_pos
-			add_child(tower)
+			game_manager.add_child(tower)
 			placed_towers.append(tower)
 
 			var placed_message := "Placed: %s (Cost: %d)" % [tower_display_names[selected_tower], cost]
