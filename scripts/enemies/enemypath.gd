@@ -1,7 +1,7 @@
 extends PathFollow2D
 
 @export var speed: float = 80.0
-@onready var attack_scene = preload("res://assets/Animations/LancerAttacking.tscn")
+@onready var attack_scene = preload("res://scenes/Units/Enemies/LancerAttacking.tscn")
 
 # Tracks whether this enemy has already started attacking
 var has_attacked: bool = false
