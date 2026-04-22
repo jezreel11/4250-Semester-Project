@@ -200,5 +200,4 @@ animations = [{
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=323000821]
 sprite_frames = SubResource("SpriteFrames_1hfnp")
-animation = &"Warrior Gold"
-frame_progress = 0.40132943
+animation = &"Lancer Gold"
