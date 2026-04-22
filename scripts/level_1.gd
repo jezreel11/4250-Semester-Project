@@ -164,18 +164,18 @@ func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
 	insufficient_funds_feedback_id += 1
 	var feedback_id := insufficient_funds_feedback_id
 
-	insufficient_funds_label.text = "Not enough coins! Need %d" % cost
+	insufficient_funds_label.text = "You need %d coins to place this tower" % cost
 	insufficient_funds_label.visible = true
-	insufficient_funds_label.scale = Vector2(0.85, 0.85)
-	insufficient_funds_label.modulate = Color(1, 0.35, 0.35, 0.0)
+	insufficient_funds_label.scale = Vector2(0.96, 0.96)
+	insufficient_funds_label.modulate = Color(0.98, 0.94, 0.78, 0.0)
 
 	var label_size := insufficient_funds_label.size
 	var viewport_size := get_viewport_rect().size
 	var start_pos := Vector2(
 		clamp(cursor_pos.x - (label_size.x / 2.0), 12.0, viewport_size.x - label_size.x - 12.0),
-		clamp(cursor_pos.y - 36.0, 12.0, viewport_size.y - label_size.y - 12.0)
+		clamp(cursor_pos.y - 42.0, 12.0, viewport_size.y - label_size.y - 12.0)
 	)
-	var end_pos := start_pos + Vector2(0.0, -20.0)
+	var end_pos := start_pos + Vector2(0.0, -10.0)
 
 	insufficient_funds_label.position = start_pos
 
@@ -184,9 +184,9 @@ func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
 
 	insufficient_funds_tween = create_tween()
 	insufficient_funds_tween.set_parallel(true)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 1.0, 0.08)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.12)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.18)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 1.0, 0.14)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.18)
+	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.22)
 	insufficient_funds_tween.finished.connect(func():
 		if feedback_id != insufficient_funds_feedback_id:
 			return
@@ -199,8 +199,8 @@ func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
 
 			insufficient_funds_tween = create_tween()
 			insufficient_funds_tween.set_parallel(true)
-			insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.25)
-			insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -10.0), 0.25)
+			insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.35)
+			insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -6.0), 0.35)
 			insufficient_funds_tween.finished.connect(func():
 				if feedback_id == insufficient_funds_feedback_id:
 					insufficient_funds_label.visible = false
