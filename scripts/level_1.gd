@@ -2,6 +2,8 @@ extends Node2D
 
 # Preloading the enemy scenes
 @export var enemy_scene = preload("res://assets/Animations/Lancer.tscn")
+@export var enemy_scene = preload("res://scenes/Units/Enemies/LancerRunning.tscn")
+@export var enemy_attack = preload("res://scenes/Units/Enemies/LancerAttacking.tscn")
 
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
@@ -127,6 +129,17 @@ func _input(event):
 
 			# First check: is the spot valid?
 			if not _can_place_tower(click_pos):
+			if _can_place_tower(click_pos) and not _is_occupied(click_pos):
+				var tower = tower_scenes[selected_tower].instantiate()
+				tower.global_position = click_pos
+				add_child(tower)
+				placed_towers.append(tower)
+				# Pass the Path2D reference so the tower knows where to spawn units
+				tower.path_node = $GameManager/Map/Path2D
+				print("Placed: ", selected_tower)
+			elif _is_occupied(click_pos):
+				print("Too close to another tower!")
+			else:
 				print("Can't place tower here!")
 				return
 
