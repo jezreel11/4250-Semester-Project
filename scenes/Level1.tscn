@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dl1f38xdfwrnu" path="res://Maps/Map Ideas & Styles/Map Syle Grass/Map_Style_Grass-1.tscn" id="1_6ovph"]
 [ext_resource type="Script" uid="uid://527425kq1lt8" path="res://scripts/level_1.gd" id="1_odhdn"]
 [ext_resource type="Script" uid="uid://fq85tvyvjrso" path="res://scripts/base.gd" id="base_script"]
+[ext_resource type="Texture2D" path="res://assets/Maps/background/PNG/game_background_4/game_background_4.png" id="3_bg4"]
 [ext_resource type="Texture2D" path="res://assets/UI Elements/UI Elements/Banners/Banner.png" id="4_banner"]
 [ext_resource type="Texture2D" path="res://assets/UI Elements/UI Elements/Wood Table/WoodTable_Slots.png" id="5_table"]
 [ext_resource type="Texture2D" path="res://assets/Buildings/Blue Buildings/Tower.png" id="6_cannon_icon"]
@@ -89,13 +90,10 @@ border_color = Color(0.364706, 0.305882, 0.231373, 0.65)
 [node name="Level1" type="Node2D" unique_id=1979386671]
 script = ExtResource("1_odhdn")
 
-[node name="Backdrop" type="ColorRect" parent="." unique_id=147820028]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.329412, 0.513726, 0.305882, 1)
+[node name="Backdrop" type="Sprite2D" parent="." unique_id=147820028]
+position = Vector2(2, 76)
+scale = Vector2(0.68, 0.68)
+texture = ExtResource("3_bg4")
 
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
 
