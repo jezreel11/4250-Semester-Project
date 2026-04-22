@@ -1,0 +1,149 @@
+[gd_scene format=3 uid="uid://dpk4k4n8otuut"]
+
+[ext_resource type="Texture2D" uid="uid://cesthe7w4t01h" path="res://assets/Particle FX/Explosion_02.png" id="1_1yioa"]
+[ext_resource type="Texture2D" uid="uid://dmr2a04al8u3b" path="res://assets/Particle FX/Explosion_01.png" id="2_thpdy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_br1i4"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8qgmd"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_chnt6"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elx7r"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnvsj"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vnv7"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ako36"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(1152, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3l4pi"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(1344, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyb11"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(1536, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4v63p"]
+atlas = ExtResource("1_1yioa")
+region = Rect2(1728, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fw1el"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3nix"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0wnph"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_av2wh"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4pe06"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4lvyd"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0pib"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(1152, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xipdb"]
+atlas = ExtResource("2_thpdy")
+region = Rect2(1344, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iy6a7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_br1i4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8qgmd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_chnt6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elx7r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fnvsj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vnv7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ako36")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3l4pi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kyb11")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4v63p")
+}],
+"loop": false,
+"name": &"Bigger Explotion",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fw1el")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p3nix")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0wnph")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_av2wh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4pe06")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4lvyd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0pib")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xipdb")
+}],
+"loop": false,
+"name": &"Explotion",
+"speed": 15.0
+}]
+
+[node name="Death" type="Node2D" unique_id=44495318]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=424650478]
+sprite_frames = SubResource("SpriteFrames_iy6a7")
+animation = &"Bigger Explotion"

@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://duqmursvn3vu0"]
+
+[ext_resource type="Script" path="res://scripts/enemies/Warrior.gd" id="1_viboq"]
+[ext_resource type="Texture2D" uid="uid://g2ji6avd3wo8" path="res://assets/Units/Red Units/Warrior/Warrior_Attack1.png" id="2_ilgwv"]
+[ext_resource type="Texture2D" uid="uid://bg2kxjxangbec" path="res://assets/Units/Red Units/Warrior/Warrior_Attack2.png" id="3_utuqf"]
+[ext_resource type="Texture2D" uid="uid://bqiwq4b8ws52l" path="res://assets/Units/Red Units/Warrior/Warrior_Run.png" id="4_filn8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7h0h"]
+atlas = ExtResource("2_ilgwv")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38xo8"]
+atlas = ExtResource("2_ilgwv")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bh08s"]
+atlas = ExtResource("2_ilgwv")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m75kl"]
+atlas = ExtResource("2_ilgwv")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1n50f"]
+atlas = ExtResource("3_utuqf")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1onfu"]
+atlas = ExtResource("3_utuqf")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mkpct"]
+atlas = ExtResource("3_utuqf")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jc5ip"]
+atlas = ExtResource("3_utuqf")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e5ci7"]
+atlas = ExtResource("4_filn8")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0otbt"]
+atlas = ExtResource("4_filn8")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_btiya"]
+atlas = ExtResource("4_filn8")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b1so2"]
+atlas = ExtResource("4_filn8")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_555pm"]
+atlas = ExtResource("4_filn8")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xegvc"]
+atlas = ExtResource("4_filn8")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_f8bvm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g7h0h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38xo8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bh08s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m75kl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1n50f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1onfu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mkpct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jc5ip")
+}],
+"loop": true,
+"name": &"Attacking",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e5ci7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0otbt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_btiya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b1so2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_555pm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xegvc")
+}],
+"loop": true,
+"name": &"Running",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5w8p0"]
+radius = 17.0
+
+[node name="Warrior" type="PathFollow2D" unique_id=481969865]
+rotates = false
+cubic_interp = false
+loop = false
+script = ExtResource("1_viboq")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1765077922]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=938516262]
+position = Vector2(0, -0.99999976)
+scale = Vector2(0.50390625, 0.5052083)
+sprite_frames = SubResource("SpriteFrames_f8bvm")
+animation = &"Attacking"
+autoplay = "Running"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D/AnimatedSprite2D" unique_id=336245478]
+position = Vector2(0, 7)
+shape = SubResource("CircleShape2D_5w8p0")

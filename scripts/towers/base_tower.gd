@@ -13,6 +13,11 @@ var spawn_timer: Timer
 var path_node: Node = null  # set by level_1.gd after placement
 
 func _ready():
+
+	add_to_group("towers")
+
+	current_health = max_health
+
 	print("Tower placed: ", tower_name, " at ", global_position)
 	_setup_timer()
 
