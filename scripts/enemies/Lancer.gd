@@ -1,6 +1,5 @@
-extends "res://scripts/enemies/enemypath.gd"
 class_name LancerEnemy
-
+extends EnemyPath
 
 func _ready():
 	max_health = 140
@@ -11,7 +10,6 @@ func _ready():
 	use_embedded_attack_animation = true
 	use_embedded_idle_animation = true
 	super()
-
 
 func _update_attack_visuals():
 	if attack_sprite == null or target_tower == null or not is_instance_valid(target_tower):

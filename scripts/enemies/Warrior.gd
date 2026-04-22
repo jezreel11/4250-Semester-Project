@@ -1,6 +1,5 @@
-extends "res://scripts/enemies/enemypath.gd"
 class_name WarriorEnemy
-
+extends EnemyPath
 
 func _ready():
 	max_health = 160
