@@ -184,7 +184,7 @@ func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.12)
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.18)
 	insufficient_funds_tween.set_parallel(false)
-	insufficient_funds_tween.tween_interval(1.57)
+	insufficient_funds_tween.tween_interval(10.0)
 	insufficient_funds_tween.set_parallel(true)
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.25)
 	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -10.0), 0.25)
