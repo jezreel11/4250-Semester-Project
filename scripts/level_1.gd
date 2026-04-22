@@ -6,7 +6,7 @@ extends Node2D
 # Preload Towers for placement
 @onready var tower_scene = preload("res://scenes/towers/Tower.tscn")
 @onready var placement_zones = $GameManager/Map/PlacementZones
-@onready var insufficient_funds_label: Label = $UI/InsufficientFundsLabel
+@onready var game_message_label: Label = $UI/InsufficientFundsLabel
 
 # Dictionary of all available tower types
 var tower_scenes = {
@@ -36,8 +36,8 @@ var enemies_spawned: int = 0
 var spawn_timer: Timer
 
 var player_currency: int = 100  # starting money
-var insufficient_funds_tween: Tween
-var insufficient_funds_feedback_id: int = 0
+var game_message_tween: Tween
+var game_message_id: int = 0
 
 func _ready():
 	# Set up the spawn timer
@@ -48,8 +48,8 @@ func _ready():
 	add_child(spawn_timer)
 	spawn_timer.start()
 
-	insufficient_funds_label.modulate.a = 0.0
-	insufficient_funds_label.visible = false
+	game_message_label.modulate.a = 0.0
+	game_message_label.visible = false
 
 
 func _on_spawn_timer_timeout():
@@ -110,21 +110,26 @@ func _input(event):
 		if event.keycode == KEY_1:
 			selected_tower = "cannon"
 			print("Selected: Cannon Tower")
+			_show_game_message("Selected: Cannon Tower")
 		elif event.keycode == KEY_2:
 			selected_tower = "archer"
 			print("Selected: Archer Tower")
+			_show_game_message("Selected: Archer Tower")
 		elif event.keycode == KEY_3:
 			selected_tower = "barracks"
 			print("Selected: Barracks")
+			_show_game_message("Selected: Barracks")
 		elif event.keycode == KEY_4:
 			selected_tower = "monastery"
 			print("Selected: Monastery")
+			_show_game_message("Selected: Monastery")
 		elif event.keycode == KEY_BACKSPACE:
 			# Remove the last placed tower
 			if placed_towers.size() > 0:
 				var last_tower = placed_towers.pop_back()
 				last_tower.queue_free()
 				print("Tower removed")
+				_show_game_message("Tower removed")
 
 	# --- TOWER PLACEMENT ---
 	if event is InputEventMouseButton:
@@ -134,18 +139,21 @@ func _input(event):
 			# First check: is the spot valid?
 			if not _can_place_tower(click_pos):
 				print("Can't place tower here!")
+				_show_game_message("Can't place tower here!", event.position)
 				return
 
 			# Second check: is the spot occupied?
 			if _is_occupied(click_pos):
 				print("Too close to another tower!")
+				_show_game_message("Too close to another tower!", event.position)
 				return
 
 			# Third check: does the player have enough money?
 			var cost = tower_costs[selected_tower]
 			if player_currency < cost:
-				print("Not enough currency! Need ", cost, ", but have ", player_currency)
-				_show_insufficient_funds_feedback(cost, event.position)
+				var insufficient_message := "Not enough currency! Need %d, but have %d." % [cost, player_currency]
+				print(insufficient_message)
+				_show_game_message(insufficient_message, event.position)
 				return
 
 			# If all checks pass → place tower
@@ -156,54 +164,67 @@ func _input(event):
 			add_child(tower)
 			placed_towers.append(tower)
 
-			print("Placed: ", selected_tower, " (Cost: ", cost, ")", " Currency left: ", player_currency)
-			print("Currency left: ", player_currency)
+			var placed_message := "Placed: %s (Cost: %d)" % [selected_tower, cost]
+			var currency_message := "Currency left: %d" % player_currency
+			print(placed_message, " ", currency_message)
+			print(currency_message)
+			_show_game_message("%s. %s" % [placed_message, currency_message])
 
 
-func _show_insufficient_funds_feedback(cost: int, cursor_pos: Vector2):
-	insufficient_funds_feedback_id += 1
-	var feedback_id := insufficient_funds_feedback_id
+func _show_game_message(message: String, cursor_pos: Vector2 = Vector2(-1, -1)):
+	game_message_id += 1
+	var message_id := game_message_id
 
-	insufficient_funds_label.text = "You need %d coins to place this tower" % cost
-	insufficient_funds_label.visible = true
-	insufficient_funds_label.scale = Vector2(0.96, 0.96)
-	insufficient_funds_label.modulate = Color(0.98, 0.94, 0.78, 0.0)
+	game_message_label.text = message
+	game_message_label.visible = true
+	game_message_label.scale = Vector2(0.96, 0.96)
+	game_message_label.modulate = Color(0.98, 0.94, 0.78, 0.0)
 
-	var label_size := insufficient_funds_label.size
+	var label_size := game_message_label.size
 	var viewport_size := get_viewport_rect().size
-	var start_pos := Vector2(
-		clamp(cursor_pos.x - (label_size.x / 2.0), 12.0, viewport_size.x - label_size.x - 12.0),
-		clamp(cursor_pos.y - 42.0, 12.0, viewport_size.y - label_size.y - 12.0)
-	)
+	var use_cursor := cursor_pos.x >= 0.0 and cursor_pos.y >= 0.0
+	var start_pos := Vector2.ZERO
+
+	if use_cursor:
+		start_pos = Vector2(
+			clamp(cursor_pos.x - (label_size.x / 2.0), 12.0, viewport_size.x - label_size.x - 12.0),
+			clamp(cursor_pos.y - 42.0, 12.0, viewport_size.y - label_size.y - 12.0)
+		)
+	else:
+		start_pos = Vector2(
+			(viewport_size.x - label_size.x) / 2.0,
+			24.0
+		)
+
 	var end_pos := start_pos + Vector2(0.0, -10.0)
 
-	insufficient_funds_label.position = start_pos
+	game_message_label.position = start_pos
 
-	if insufficient_funds_tween:
-		insufficient_funds_tween.kill()
+	if game_message_tween:
+		game_message_tween.kill()
 
-	insufficient_funds_tween = create_tween()
-	insufficient_funds_tween.set_parallel(true)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 1.0, 0.14)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "scale", Vector2.ONE, 0.18)
-	insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos, 0.22)
-	insufficient_funds_tween.finished.connect(func():
-		if feedback_id != insufficient_funds_feedback_id:
+	game_message_tween = create_tween()
+	game_message_tween.set_parallel(true)
+	game_message_tween.tween_property(game_message_label, "modulate:a", 1.0, 0.14)
+	game_message_tween.tween_property(game_message_label, "scale", Vector2.ONE, 0.18)
+	game_message_tween.tween_property(game_message_label, "position", end_pos, 0.22)
+	game_message_tween.finished.connect(func():
+		if message_id != game_message_id:
 			return
 
-		insufficient_funds_tween = create_tween()
-		insufficient_funds_tween.tween_interval(1.57)
-		insufficient_funds_tween.finished.connect(func():
-			if feedback_id != insufficient_funds_feedback_id:
+		game_message_tween = create_tween()
+		game_message_tween.tween_interval(1.57)
+		game_message_tween.finished.connect(func():
+			if message_id != game_message_id:
 				return
 
-			insufficient_funds_tween = create_tween()
-			insufficient_funds_tween.set_parallel(true)
-			insufficient_funds_tween.tween_property(insufficient_funds_label, "modulate:a", 0.0, 0.35)
-			insufficient_funds_tween.tween_property(insufficient_funds_label, "position", end_pos + Vector2(0.0, -6.0), 0.35)
-			insufficient_funds_tween.finished.connect(func():
-				if feedback_id == insufficient_funds_feedback_id:
-					insufficient_funds_label.visible = false
+			game_message_tween = create_tween()
+			game_message_tween.set_parallel(true)
+			game_message_tween.tween_property(game_message_label, "modulate:a", 0.0, 0.35)
+			game_message_tween.tween_property(game_message_label, "position", end_pos + Vector2(0.0, -6.0), 0.35)
+			game_message_tween.finished.connect(func():
+				if message_id == game_message_id:
+					game_message_label.visible = false
 			, CONNECT_ONE_SHOT)
 		, CONNECT_ONE_SHOT)
 	, CONNECT_ONE_SHOT)
