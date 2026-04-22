@@ -8,6 +8,8 @@ extends Node2D
 @onready var game_manager = $GameManager
 @onready var placement_zones = $GameManager/Map/PlacementZones
 @onready var base_node = $GameManager/Map/Base
+@onready var backdrop: Sprite2D = $Backdrop
+@onready var camera: Camera2D = $Camera2D
 @onready var game_message_label: Label = $UI/InsufficientFundsLabel
 @onready var currency_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/GoldBadge/GoldPadding/CurrencyLabel
 @onready var base_health_label: Label = $UI/HUDRoot/TopBar/StatsMargin/StatsColumn/HealthBadge/HealthPadding/BaseHealthLabel
@@ -93,7 +95,13 @@ func _ready():
 	_connect_tower_buttons()
 	base_node.health_changed.connect(_on_base_health_changed)
 	_on_base_health_changed(base_node.current_health, base_node.max_health)
+	_sync_backdrop()
+	get_viewport().size_changed.connect(_sync_backdrop)
 	_refresh_hud()
+
+
+func _process(_delta: float) -> void:
+	_sync_backdrop()
 
 
 func _on_spawn_timer_timeout():
@@ -137,6 +145,24 @@ func _refresh_hud() -> void:
 	currency_label.text = "Gold: %d" % player_currency
 	selected_tower_label.text = "Ready: %s" % tower_display_names[selected_tower]
 	_update_tower_buttons()
+
+
+func _sync_backdrop() -> void:
+	if not is_instance_valid(backdrop) or not is_instance_valid(camera):
+		return
+
+	if backdrop.texture == null:
+		return
+
+	var texture_size := backdrop.texture.get_size()
+	if texture_size == Vector2.ZERO:
+		return
+
+	var viewport_size := get_viewport_rect().size
+	var cover_scale: float = maxf(viewport_size.x / texture_size.x, viewport_size.y / texture_size.y)
+
+	backdrop.global_position = camera.global_position
+	backdrop.scale = Vector2.ONE * cover_scale
 
 
 func _update_tower_buttons() -> void:

@@ -21,6 +21,10 @@ Console="*uid://ouiu5xh1cs8n"
 Console_Comands="*uid://t4vld33eu52s"
 PauseMenu="*uid://cn543ovxdk4lf"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [editor]
 
 version_control/plugin_name="GitPlugin"
@@ -29,14 +33,6 @@ version_control/autoload_on_startup=true
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/console/plugin.cfg")
-
-[display]
-
-window/size/viewport_width=1152
-window/size/viewport_height=648
-window/size/resizable=true
-window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 
 [physics]
 

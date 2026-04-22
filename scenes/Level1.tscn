@@ -91,8 +91,8 @@ border_color = Color(0.364706, 0.305882, 0.231373, 0.65)
 script = ExtResource("1_odhdn")
 
 [node name="Backdrop" type="Sprite2D" parent="." unique_id=147820028]
-position = Vector2(2, 76)
-scale = Vector2(0.68, 0.68)
+position = Vector2(576, 324)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_bg4")
 
 [node name="GameManager" type="Node2D" parent="." unique_id=617801999]
