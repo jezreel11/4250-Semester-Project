@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cn543ovxdk4lf"]
 
 [ext_resource type="Script" uid="uid://fly4bm3hpurc" path="res://scenes/Pause Menu/Pause Menu Scripts/pause_script.gd" id="1_5qgnb"]
+[ext_resource type="PackedScene" uid="uid://cccihteygpgs0" path="res://mainmenu.tscn" id="2_iwgi1"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=77408654 node_paths=PackedStringArray("container_Main", "button_Resume", "button_Restart", "button_MainMenu", "button_Fullscreen", "button_Quit")]
 process_mode = 3
@@ -10,6 +11,7 @@ container_Main = NodePath("Control")
 button_Resume = NodePath("Control/Pause Menu/Resume Button")
 button_Restart = NodePath("Control/Pause Menu/Restart Button")
 button_MainMenu = NodePath("Control/Pause Menu/Main Menu Button")
+screen_MainMenu = ExtResource("2_iwgi1")
 button_Fullscreen = NodePath("Control/Pause Menu/Fullscreen Button")
 button_Quit = NodePath("Control/Pause Menu/Quit Game Button")
 

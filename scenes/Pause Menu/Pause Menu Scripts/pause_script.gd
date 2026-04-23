@@ -7,6 +7,7 @@ extends Node
 @export var button_Resume: Button
 @export var button_Restart: Button
 @export var button_MainMenu: Button
+@export var screen_MainMenu: PackedScene
 @export var button_Fullscreen: Button
 @export var button_Quit: Button
 @export var key_Resume: Key = KEY_ESCAPE
@@ -103,8 +104,8 @@ func resume_game():
 func restart_level():
 	get_tree().reload_current_scene()
 
-
 func go_to_main_menu():
+	get_tree().change_scene_to_packed(screen_MainMenu)
 	get_tree().change_scene_to_file("res://mainmenu.tscn")
 
 
