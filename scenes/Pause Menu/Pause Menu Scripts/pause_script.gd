@@ -7,7 +7,6 @@ extends Node
 @export var button_Resume: Button
 @export var button_Restart: Button
 @export var button_MainMenu: Button
-@export var screen_MainMenu: NavigationLink2D
 @export var button_Fullscreen: Button
 @export var button_Quit: Button
 @export var key_Resume: Key = KEY_ESCAPE
@@ -106,7 +105,7 @@ func restart_level():
 
 
 func go_to_main_menu():
-	screen_MainMenu.navigate_to()
+	get_tree().change_scene_to_file("res://mainmenu.tscn")
 
 
 func toggle_fullscreen():
