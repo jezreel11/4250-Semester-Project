@@ -56,7 +56,7 @@ func _process(delta):
 			$CharacterBody2D.position = end_offset
 		if attack_instance and attack_instance != $CharacterBody2D:
 			attack_instance.position = end_offset
-		if is_instance_valid(target_tower) and target_tower.current_health <= 0 and not attack_finished:
+		if is_instance_valid(target_tower) and _is_target_destroyed(target_tower) and not attack_finished:
 			attack_finished = true
 			_switch_to_idle()
 			emit_signal("enemy_finished")
@@ -171,26 +171,40 @@ func _switch_to_idle():
 
 
 func _find_tower_in_range() -> Node:
-	var towers = get_tree().get_nodes_in_group("towers")
-	for tower in towers:
-		if is_instance_valid(tower):
-			var dist = global_position.distance_to(tower.global_position)
+	for attack_target in _get_attack_targets():
+		if is_instance_valid(attack_target):
+			var dist = global_position.distance_to(attack_target.global_position)
 			if dist <= detect_range:
-				return tower
+				return attack_target
 	return null
 
 
 func _find_nearest_tower() -> Node:
-	var towers = get_tree().get_nodes_in_group("towers")
 	var nearest = null
 	var nearest_dist = INF
-	for tower in towers:
-		if is_instance_valid(tower):
-			var dist = global_position.distance_to(tower.global_position)
+	for attack_target in _get_attack_targets():
+		if is_instance_valid(attack_target):
+			var dist = global_position.distance_to(attack_target.global_position)
 			if dist < nearest_dist:
 				nearest_dist = dist
-				nearest = tower
+				nearest = attack_target
 	return nearest
+
+
+func _get_attack_targets() -> Array:
+	return get_tree().get_nodes_in_group("friendlies") + get_tree().get_nodes_in_group("towers")
+
+
+func _is_target_destroyed(target_node: Node) -> bool:
+	var current_health_value = target_node.get("current_health")
+	if current_health_value != null:
+		return int(current_health_value) <= 0
+
+	var health_value = target_node.get("health")
+	if health_value != null:
+		return int(health_value) <= 0
+
+	return not is_instance_valid(target_node)
 
 
 func _process_attack_loop(end_sequence: bool):
@@ -211,7 +225,7 @@ func _process_attack_loop(end_sequence: bool):
 			var should_stop = false
 			if not is_instance_valid(target_tower):
 				should_stop = true
-			elif target_tower.current_health <= 0:
+			elif _is_target_destroyed(target_tower):
 				should_stop = true
 			elif attack_count >= MAX_ATTACKS:
 				should_stop = true

@@ -8,4 +8,5 @@ func _ready():
 	speed = 55.0
 	health = 70   # fragile but supportive
 	damage = 0
+	attack_range = 0.0
 	super._ready()
