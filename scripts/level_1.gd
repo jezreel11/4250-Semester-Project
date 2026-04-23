@@ -407,6 +407,7 @@ func _input(event):
 			tower.global_position = click_pos
 			game_manager.add_child(tower)
 			placed_towers.append(tower)
+			tower.path_node = $GameManager/Map/Path2D
 
 			var placed_message := "Placed: %s (Cost: %d)" % [tower_display_names[selected_tower], cost]
 			var currency_message := "Coins left: %d" % player_currency
