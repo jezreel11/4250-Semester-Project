@@ -7,7 +7,7 @@ extends Node
 @export var button_Resume: Button
 @export var button_Restart: Button
 @export var button_MainMenu: Button
-@export var screen_MainMenu: NavigationLink2D
+@export var screen_MainMenu: PackedScene
 @export var button_Quit: Button
 @export var key_Resume: Key = KEY_ESCAPE
 
@@ -70,10 +70,8 @@ func resume_game():
 func restart_level():
 	get_tree().reload_current_scene()
 
-
 func go_to_main_menu():
-	screen_MainMenu.navigate_to()
-
+	get_tree().change_scene_to_packed(screen_MainMenu)
 
 func quit_game():
 	get_tree().quit()
