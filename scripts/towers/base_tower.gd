@@ -18,9 +18,11 @@ var current_health: int = 100
 
 var is_placed: bool = false
 
-var spawned_units: Array = []	# tracks all living units this tower spawned
+var spawned_units: Array = []
 
-var spawn_timer: Timer			# controls spawn timing
+var spawn_timer: Timer
+
+var path_node: Node = null		# ADD THIS LINE
 
 func _ready():
 
@@ -38,15 +40,13 @@ func _setup_timer():
 
 	spawn_timer = Timer.new()
 
-	spawn_timer.wait_time = 1.0		# subclasses override this with their spawn_rate
+	spawn_timer.wait_time = 1.0
 
 	spawn_timer.autostart = false
 
 	spawn_timer.timeout.connect(_on_spawn_timer)
 
 	add_child(spawn_timer)
-
-# Subclasses override this to define what gets spawned
 
 func _on_spawn_timer():
 
@@ -70,7 +70,6 @@ func _draw():
 
 		draw_circle(Vector2.ZERO, attack_range, Color(1, 1, 0, 0.15))
 
-	# Draw health bar — compensate for node scale so it appears the same size on all towers
 	var s = scale
 
 	var bar_w = 40.0 / s.x
@@ -81,10 +80,8 @@ func _draw():
 
 	var bar_y = 35.0 / s.y
 
-	# Dark background
 	draw_rect(Rect2(bar_x, bar_y, bar_w, bar_h), Color(0.15, 0.15, 0.15, 0.85))
 
-	# Blue fill based on current health
 	var fill_w = bar_w * (float(current_health) / float(max_health))
 
 	draw_rect(Rect2(bar_x, bar_y, fill_w, bar_h), Color(0, 0.5, 1, 1))
